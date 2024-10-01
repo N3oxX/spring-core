@@ -1,6 +1,7 @@
-package br.com.danielpadua.java_spring_idea_example;
+package com.template.spring;
 
 import org.junit.Test;
+
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
