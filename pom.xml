@@ -9,11 +9,11 @@
         <version>2.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>br.com.danielpadua</groupId>
-    <artifactId>java-spring-idea-example</artifactId>
+    <groupId>com.mtzperez</groupId>
+    <artifactId>spring-mongo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>java-spring-idea-example</name>
+    <name>spring-mongo</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
