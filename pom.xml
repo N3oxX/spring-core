@@ -10,10 +10,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mtzperez</groupId>
-    <artifactId>spring-mongo</artifactId>
+    <artifactId>spring-core</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>spring-mongo</name>
+    <name>spring-core</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
