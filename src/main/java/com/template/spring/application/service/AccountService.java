@@ -14,9 +14,8 @@ import java.math.BigDecimal;
 /**
  * This class represents the primary port implementation within the domain layer.
  */
-@Service
 @RequiredArgsConstructor
-public class AccountServices implements WithdrawFundsUseCase, ManagementUseCase {
+public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
 
   private final AccountRepository accountRepository;
 

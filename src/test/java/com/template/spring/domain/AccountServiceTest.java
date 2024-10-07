@@ -1,8 +1,8 @@
 package com.template.spring.domain;
 
-import com.template.spring.application.service.AccountServices;
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.service.AccountService;
 import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-public class AccountServicesTest {
+public class AccountServiceTest {
 
     private AccountRepository accountRepository;
-    private AccountServices accountServices;
+    private AccountService accountService;
 
     @BeforeEach
     public void setup() {
         accountRepository = Mockito.mock(AccountRepository.class);
-        accountServices = new AccountServices(accountRepository);
+        accountService = new AccountService(accountRepository);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class AccountServicesTest {
         ArgumentCaptor<Account> accountCaptor = ArgumentCaptor.forClass(Account.class);
         when(accountRepository.save(accountCaptor.capture())).thenAnswer(invocation -> accountCaptor.getValue());
 
-        Account updatedAccount = accountServices.withdrawFunds(accountNumber, BigDecimal.TEN);
+        Account updatedAccount = accountService.withdrawFunds(accountNumber, BigDecimal.TEN);
 
         assertEquals(BigDecimal.valueOf(40), updatedAccount.getBalance());
         Mockito.verify(accountRepository).save(accountCaptor.getValue());
@@ -49,7 +49,7 @@ public class AccountServicesTest {
         Account account = new Account(accountNumber, "1", BigDecimal.ZERO);
         when(accountRepository.findByNumber(accountNumber)).thenReturn(account);
 
-        assertThrows(InsufficientFundsException.class, () -> accountServices.withdrawFunds(accountNumber, BigDecimal.TEN));
+        assertThrows(InsufficientFundsException.class, () -> accountService.withdrawFunds(accountNumber, BigDecimal.TEN));
     }
 
     @Test
@@ -57,6 +57,6 @@ public class AccountServicesTest {
         long accountNumber = 123456L;
         when(accountRepository.findByNumber(accountNumber)).thenReturn(null);
 
-        assertThrows(UnknownAccountException.class, () -> accountServices.withdrawFunds(accountNumber, BigDecimal.TEN));
+        assertThrows(UnknownAccountException.class, () -> accountService.withdrawFunds(accountNumber, BigDecimal.TEN));
     }
 }

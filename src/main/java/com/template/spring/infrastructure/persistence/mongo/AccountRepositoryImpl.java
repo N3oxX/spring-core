@@ -4,13 +4,12 @@ import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+
 
 /**
  * This class is a secondary port adapter used to interact with the persistence layer.
  */
 @RequiredArgsConstructor
-@Repository
 public class AccountRepositoryImpl implements AccountRepository {
 
   private final AccountMongoRepository accountMongoRepository;
