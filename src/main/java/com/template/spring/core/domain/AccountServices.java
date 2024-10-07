@@ -20,12 +20,17 @@ public class AccountServices implements WithdrawFundsUseCase {
   @Override
   public Account withdrawFunds(Long accountNumber, BigDecimal amount)
       throws UnknownAccountException, InsufficientFundsException {
-    //accountRepository.save(new Account(2L,"2", BigDecimal.valueOf(100L)));
     Account account = accountRepository.findByNumber(accountNumber);
     if(account == null) {
       throw new UnknownAccountException("Account not found");
     }
     account.updateBalance(amount.negate());
+    return accountRepository.save(account);
+  }
+
+  @Override
+  public Account createAccount(String accountNumber, BigDecimal amount) {
+    Account account = accountRepository.save(Account.builder().balance(amount).customerId(accountNumber).number(Long.parseLong(accountNumber)).build());
     return accountRepository.save(account);
   }
 }

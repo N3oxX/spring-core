@@ -14,4 +14,6 @@ public interface WithdrawFundsUseCase {
   Account withdrawFunds(Long accountNumber, BigDecimal amount)
       throws UnknownAccountException, InsufficientFundsException;
 
+  Account createAccount(String accountNumber, BigDecimal amount);
+
 }

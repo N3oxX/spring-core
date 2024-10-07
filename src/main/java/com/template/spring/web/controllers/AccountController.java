@@ -34,5 +34,12 @@ public class AccountController {
     return AccountMapper.mapToResource(account);
   }
 
+  @PostMapping("/{accountNumber}/actions/create")
+  public AccountResource createAccount(@PathVariable String accountNumber, @RequestBody Long amountInCents) {
+    Account account = withdrawFundsUseCase.createAccount(accountNumber,
+            BigDecimal.valueOf(amountInCents / 100));
+    return AccountMapper.mapToResource(account);
+  }
+
 
 }

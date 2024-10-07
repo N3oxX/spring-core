@@ -1,11 +1,15 @@
 package com.template.spring.core.domain;
 
 import com.template.spring.core.exceptions.InsufficientFundsException;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 import java.math.BigDecimal;
 
 /**
  * This class represents the domain model for an account.
  */
+@Builder
 public class Account {
 
   private final long number;
