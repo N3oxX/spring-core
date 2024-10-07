@@ -3,6 +3,7 @@ package com.template.spring.web.controllers;
 import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.exceptions.InsufficientFundsException;
 import com.template.spring.core.exceptions.UnknownAccountException;
+import com.template.spring.core.usecases.ManagementUseCase;
 import com.template.spring.core.usecases.WithdrawFundsUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class AccountControllerTest {
 
     @MockBean
     private WithdrawFundsUseCase withdrawFundsUseCase;
+
+    @MockBean
+    private ManagementUseCase managementUseCase;
 
     @Test
     public void withdrawFundsReturnsAccountResourceWhenSuccessful() throws Exception {
