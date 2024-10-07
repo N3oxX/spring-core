@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AccountResource {
+public class AccountDtoResponse {
 
     private final long accountNumber;
     private final long balanceInCents;

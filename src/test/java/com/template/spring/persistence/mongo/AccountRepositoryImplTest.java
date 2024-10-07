@@ -1,6 +1,6 @@
 package com.template.spring.persistence.mongo;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

@@ -2,7 +2,7 @@ package com.template.spring.persistence.memory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,7 @@
 package com.template.spring.core.domain;
 
+import com.template.spring.core.domain.model.Account;
+import com.template.spring.core.domain.service.AccountServices;
 import com.template.spring.core.exceptions.InsufficientFundsException;
 import com.template.spring.core.exceptions.UnknownAccountException;
 import com.template.spring.core.repositories.AccountRepository;

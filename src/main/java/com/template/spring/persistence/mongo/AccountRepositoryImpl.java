@@ -1,18 +1,18 @@
 package com.template.spring.persistence.mongo;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.repositories.AccountRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 /**
  * This class is a secondary port adapter used to interact with the persistence layer.
  */
+@RequiredArgsConstructor
+@Repository
 public class AccountRepositoryImpl implements AccountRepository {
 
   private final AccountMongoRepository accountMongoRepository;
-
-  public AccountRepositoryImpl(AccountMongoRepository accountMongoRepository) {
-    this.accountMongoRepository = accountMongoRepository;
-  }
 
   @Override
   public Account findByNumber(Long number) {

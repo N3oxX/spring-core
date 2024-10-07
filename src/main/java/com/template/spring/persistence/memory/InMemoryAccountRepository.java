@@ -1,6 +1,6 @@
 package com.template.spring.persistence.memory;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.repositories.AccountRepository;
 
 import java.util.HashMap;

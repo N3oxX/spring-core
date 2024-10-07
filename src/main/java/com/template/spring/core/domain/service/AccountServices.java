@@ -1,21 +1,24 @@
-package com.template.spring.core.domain;
+package com.template.spring.core.domain.service;
 
+import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.exceptions.InsufficientFundsException;
 import com.template.spring.core.exceptions.UnknownAccountException;
 import com.template.spring.core.repositories.AccountRepository;
+import com.template.spring.core.usecases.ManagementUseCase;
 import com.template.spring.core.usecases.WithdrawFundsUseCase;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 
 /**
  * This class represents the primary port implementation within the domain layer.
  */
-public class AccountServices implements WithdrawFundsUseCase {
+@Service
+@RequiredArgsConstructor
+public class AccountServices implements WithdrawFundsUseCase, ManagementUseCase {
 
   private final AccountRepository accountRepository;
-
-  public AccountServices(AccountRepository accountRepository) {
-    this.accountRepository = accountRepository;
-  }
 
   @Override
   public Account withdrawFunds(Long accountNumber, BigDecimal amount)

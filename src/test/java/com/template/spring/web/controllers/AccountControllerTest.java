@@ -1,6 +1,6 @@
 package com.template.spring.web.controllers;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.exceptions.InsufficientFundsException;
 import com.template.spring.core.exceptions.UnknownAccountException;
 import com.template.spring.core.usecases.WithdrawFundsUseCase;

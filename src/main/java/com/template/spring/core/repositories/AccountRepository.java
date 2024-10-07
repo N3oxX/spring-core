@@ -1,6 +1,6 @@
 package com.template.spring.core.repositories;
 
-import com.template.spring.core.domain.Account;
+import com.template.spring.core.domain.model.Account;
 
 /**
  * This interface represents the secondary port used to interact with the persistence layer.

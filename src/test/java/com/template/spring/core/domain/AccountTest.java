@@ -1,5 +1,6 @@
 package com.template.spring.core.domain;
 
+import com.template.spring.core.domain.model.Account;
 import com.template.spring.core.exceptions.InsufficientFundsException;
 import org.junit.jupiter.api.Test;
 
