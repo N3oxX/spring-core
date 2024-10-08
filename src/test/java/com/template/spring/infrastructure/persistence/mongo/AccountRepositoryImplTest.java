@@ -39,7 +39,7 @@ public class AccountRepositoryImplTest {
         BigDecimal.ZERO);
     Account accountSave = new Account(accountNumber, "1", BigDecimal.ZERO);
 
-    when(accountMapper.AccountDBOToAccount(accountDBO)).thenReturn(
+    when(accountMapper.DBOToEntity(accountDBO)).thenReturn(
             accountSave);
     when(accountMongoRepository.findById(String.valueOf(accountNumber))).thenReturn(
         Optional.of(accountDBO));
@@ -63,9 +63,9 @@ public class AccountRepositoryImplTest {
     long accountNumber = 123456L;
     Account account = new Account(accountNumber, "1", BigDecimal.ZERO);
     AccountDBO accountDBO = new AccountDBO(String.valueOf(accountNumber), "1", BigDecimal.ZERO);
-    when(accountMapper.AccountToAccountDBO(account)).thenReturn(
+    when(accountMapper.EntityToDBO(account)).thenReturn(
             accountDBO);
-    when(accountMapper.AccountDBOToAccount(accountDBO)).thenReturn(
+    when(accountMapper.DBOToEntity(accountDBO)).thenReturn(
             account);
     when(accountMongoRepository.save(Mockito.any(AccountDBO.class))).thenReturn(
             accountDBO);

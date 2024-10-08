@@ -27,14 +27,14 @@ public class AccountRepositoryImpl implements AccountRepository {
     if (accountDBO == null) {
       return null;
     }
-    return accountMapper.AccountDBOToAccount(accountDBO);
+    return accountMapper.DBOToEntity(accountDBO);
   }
 
   @Override
   public Account save(Account account) {
-    AccountDBO accountDBO = accountMapper.AccountToAccountDBO(account);
+    AccountDBO accountDBO = accountMapper.EntityToDBO(account);
     accountDBO = accountMongoRepository.save(accountDBO);
-    return accountMapper.AccountDBOToAccount(accountDBO);
+    return accountMapper.DBOToEntity(accountDBO);
   }
 
   @Override
@@ -42,7 +42,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     return accountMongoRepository.findAll()
             .stream()
-            .map(accountMapper::AccountDBOToAccount)
+            .map(accountMapper::DBOToEntity)
             .collect(Collectors.toList());
   }
 
