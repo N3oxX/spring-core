@@ -6,6 +6,9 @@ import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
  * This class is a secondary port adapter used to interact with the persistence layer.
@@ -32,6 +35,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     AccountDBO accountDBO = accountMapper.AccountToAccountDBO(account);
     accountDBO = accountMongoRepository.save(accountDBO);
     return accountMapper.AccountDBOToAccount(accountDBO);
+  }
+
+  @Override
+  public List<Account> getAll() {
+
+    return accountMongoRepository.findAll()
+            .stream()
+            .map(accountMapper::AccountDBOToAccount)
+            .collect(Collectors.toList());
   }
 
 

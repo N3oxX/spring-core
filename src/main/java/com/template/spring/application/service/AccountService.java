@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * This class represents the primary port implementation within the domain layer.
@@ -38,5 +39,10 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   public Account createAccount(AccountDTO accountDTO) {
     Account account = accountRepository.save(accountMapper.AccountDTOToAccount(accountDTO));
     return accountRepository.save(account);
+  }
+
+  @Override
+  public List<Account> getAllAccounts() {
+    return accountRepository.getAll();
   }
 }

@@ -28,4 +28,13 @@ client.test("Request executed successfully", function() {
 });
 %}
 
+###
+GET http://localhost:8080/accounts/actions/get-all
+Accept: application/json
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
 

@@ -4,6 +4,7 @@ import com.template.spring.domain.model.Account;
 import com.template.spring.web.dto.AccountDTO;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * This interface represents the primary port used to interact with the domain layer.
@@ -11,5 +12,7 @@ import java.math.BigDecimal;
 public interface ManagementUseCase {
 
   Account createAccount(AccountDTO accountDTO);
+
+  List<Account> getAllAccounts();
 
 }
