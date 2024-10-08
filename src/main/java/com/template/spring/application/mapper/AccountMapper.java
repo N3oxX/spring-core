@@ -1,8 +1,8 @@
 package com.template.spring.application.mapper;
 
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
-import com.template.spring.web.dto.AccountDTO;
-import com.template.spring.web.dto.AccountDTOResponse;
+import com.template.spring.web.dto.input.AccountDTO;
+import com.template.spring.web.dto.output.AccountDTOResponse;
 import com.template.spring.domain.model.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

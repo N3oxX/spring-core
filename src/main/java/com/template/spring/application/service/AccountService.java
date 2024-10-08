@@ -7,9 +7,8 @@ import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.application.usecase.ManagementUseCase;
 import com.template.spring.application.usecase.WithdrawFundsUseCase;
-import com.template.spring.web.dto.AccountDTO;
+import com.template.spring.web.dto.input.AccountDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;

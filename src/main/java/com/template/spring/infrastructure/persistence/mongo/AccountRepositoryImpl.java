@@ -46,5 +46,4 @@ public class AccountRepositoryImpl implements AccountRepository {
             .collect(Collectors.toList());
   }
 
-
 }

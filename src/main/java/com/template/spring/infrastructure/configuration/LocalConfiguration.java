@@ -32,4 +32,10 @@ public class LocalConfiguration {
     return new InMemoryAccountRepository();
   }
 
+  @Bean
+  public AccountMapper accountMapper() {
+    return AccountMapper.INSTANCE;
+  }
+
+
 }

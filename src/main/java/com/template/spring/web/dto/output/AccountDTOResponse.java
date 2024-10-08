@@ -1,4 +1,4 @@
-package com.template.spring.web.dto;
+package com.template.spring.web.dto.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

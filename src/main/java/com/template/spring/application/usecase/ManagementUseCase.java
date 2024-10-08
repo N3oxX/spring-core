@@ -1,9 +1,8 @@
 package com.template.spring.application.usecase;
 
 import com.template.spring.domain.model.Account;
-import com.template.spring.web.dto.AccountDTO;
+import com.template.spring.web.dto.input.AccountDTO;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
