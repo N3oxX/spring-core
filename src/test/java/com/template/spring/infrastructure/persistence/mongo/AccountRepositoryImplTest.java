@@ -1,5 +1,6 @@
 package com.template.spring.infrastructure.persistence.mongo;
 
+import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.domain.model.Account;
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +22,14 @@ public class AccountRepositoryImplTest {
   @MockBean
   private AccountMongoRepository accountMongoRepository;
 
+  @MockBean
+  private AccountMapper accountMapper;
+
   private AccountRepositoryImpl accountRepository;
 
   @BeforeEach
   public void setup() {
-    accountRepository = new AccountRepositoryImpl(accountMongoRepository);
+    accountRepository = new AccountRepositoryImpl(accountMongoRepository, accountMapper);
   }
 
   @Test
@@ -33,9 +37,12 @@ public class AccountRepositoryImplTest {
     long accountNumber = 123456L;
     AccountDBO accountDBO = new AccountDBO(String.valueOf(accountNumber), "1",
         BigDecimal.ZERO);
+    Account accountSave = new Account(accountNumber, "1", BigDecimal.ZERO);
+
+    when(accountMapper.AccountDBOToAccount(accountDBO)).thenReturn(
+            accountSave);
     when(accountMongoRepository.findById(String.valueOf(accountNumber))).thenReturn(
         Optional.of(accountDBO));
-
     Account account = accountRepository.findByNumber(accountNumber);
 
     assertEquals(accountNumber, account.getNumber());
@@ -56,6 +63,10 @@ public class AccountRepositoryImplTest {
     long accountNumber = 123456L;
     Account account = new Account(accountNumber, "1", BigDecimal.ZERO);
     AccountDBO accountDBO = new AccountDBO(String.valueOf(accountNumber), "1", BigDecimal.ZERO);
+    when(accountMapper.AccountToAccountDBO(account)).thenReturn(
+            accountDBO);
+    when(accountMapper.AccountDBOToAccount(accountDBO)).thenReturn(
+            account);
     when(accountMongoRepository.save(Mockito.any(AccountDBO.class))).thenReturn(
             accountDBO);
 

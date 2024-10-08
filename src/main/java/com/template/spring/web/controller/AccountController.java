@@ -2,7 +2,7 @@ package com.template.spring.web.controller;
 
 import com.template.spring.domain.model.Account;
 import com.template.spring.application.usecase.ManagementUseCase;
-import com.template.spring.web.mapper.AccountMapper;
+import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.web.dto.AccountDTOResponse;
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
@@ -27,19 +27,21 @@ public class AccountController {
   private final WithdrawFundsUseCase withdrawFundsUseCase;
   private final ManagementUseCase managementUseCase;
 
+  private final AccountMapper mapper;
+
   @PostMapping("/{accountNumber}/actions/withdraw")
   public AccountDTOResponse withdrawFunds(@PathVariable long accountNumber, @RequestBody Long amountInCents)
       throws UnknownAccountException, InsufficientFundsException {
     Account account = withdrawFundsUseCase.withdrawFunds(accountNumber,
         BigDecimal.valueOf(amountInCents / 100));
-    return AccountMapper.mapToResponse(account);
+    return mapper.DTOToResponse(account);
   }
 
   @PostMapping("/{accountNumber}/actions/create")
   public AccountDTOResponse createAccount(@PathVariable String accountNumber, @RequestBody Long amountInCents) {
     Account account = managementUseCase.createAccount(accountNumber,
             BigDecimal.valueOf(amountInCents / 100));
-    return AccountMapper.mapToResponse(account);
+    return mapper.DTOToResponse(account);
   }
 
 

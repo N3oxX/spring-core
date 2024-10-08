@@ -5,6 +5,7 @@ import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.application.usecase.ManagementUseCase;
 import com.template.spring.application.usecase.WithdrawFundsUseCase;
+import com.template.spring.application.mapper.AccountMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +32,9 @@ public class AccountControllerTest {
 
     @MockBean
     private ManagementUseCase managementUseCase;
+
+    @MockBean
+    private AccountMapper mapper;
 
     @Test
     public void withdrawFundsReturnsAccountResourceWhenSuccessful() throws Exception {

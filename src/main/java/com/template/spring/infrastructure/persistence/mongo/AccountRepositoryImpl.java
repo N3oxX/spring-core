@@ -1,5 +1,6 @@
 package com.template.spring.infrastructure.persistence.mongo;
 
+import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
@@ -14,6 +15,8 @@ public class AccountRepositoryImpl implements AccountRepository {
 
   private final AccountMongoRepository accountMongoRepository;
 
+  private final AccountMapper accountMapper;
+
   @Override
   public Account findByNumber(Long number) {
     AccountDBO accountDBO = accountMongoRepository.findById(String.valueOf(number))
@@ -21,25 +24,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     if (accountDBO == null) {
       return null;
     }
-    return mapToAccount(accountDBO);
+    return accountMapper.AccountDBOToAccount(accountDBO);
   }
 
   @Override
   public Account save(Account account) {
-    AccountDBO accountDBO = mapToAccountDocument(account);
+    AccountDBO accountDBO = accountMapper.AccountToAccountDBO(account);
     accountDBO = accountMongoRepository.save(accountDBO);
-    return mapToAccount(accountDBO);
+    return accountMapper.AccountDBOToAccount(accountDBO);
   }
 
-
-  private Account mapToAccount(AccountDBO accountDBO) {
-    return new Account(Long.parseLong(accountDBO.getNumber()), accountDBO.getCustomerId(),
-        accountDBO.getBalance());
-  }
-
-  private AccountDBO mapToAccountDocument(Account account) {
-    return new AccountDBO(String.valueOf(account.getNumber()), account.getCustomerId(),
-        account.getBalance());
-  }
 
 }
