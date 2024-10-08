@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Profile;
 public class DefaultConfiguration {
 
     @Bean
-    public AccountService accountServices(AccountRepository accountRepository) {
-        return new AccountService(accountRepository);
+    public AccountService accountServices(AccountRepository accountRepository, AccountMapper accountMapper) {
+        return new AccountService(accountRepository, accountMapper );
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.template.spring.domain;
 
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.application.service.AccountService;
 import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;
@@ -20,11 +21,11 @@ public class AccountServiceTest {
 
     private AccountRepository accountRepository;
     private AccountService accountService;
-
+    private AccountMapper accountMapper;
     @BeforeEach
     public void setup() {
         accountRepository = Mockito.mock(AccountRepository.class);
-        accountService = new AccountService(accountRepository);
+        accountService = new AccountService(accountRepository, accountMapper);
     }
 
     @Test

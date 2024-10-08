@@ -1,8 +1,12 @@
 # curl -X POST 'http://localhost:8080/accounts/1/actions/create' -d '100000'
-POST http://localhost:8080/accounts/1/actions/create
+POST http://localhost:8080/accounts/actions/create
 Content-Type: application/json
 
-100000
+{
+  "number": "1",
+  "customerId": "1",
+  "balance": 10000
+}
 
 > {%
 client.test("Request executed successfully", function() {

@@ -1,6 +1,7 @@
 package com.template.spring.application.usecase;
 
 import com.template.spring.domain.model.Account;
+import com.template.spring.web.dto.AccountDTO;
 
 import java.math.BigDecimal;
 
@@ -9,6 +10,6 @@ import java.math.BigDecimal;
  */
 public interface ManagementUseCase {
 
-  Account createAccount(String accountNumber, BigDecimal amount);
+  Account createAccount(AccountDTO accountDTO);
 
 }

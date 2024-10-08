@@ -1,11 +1,13 @@
 package com.template.spring.application.service;
 
+import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.domain.model.Account;
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.application.usecase.ManagementUseCase;
 import com.template.spring.application.usecase.WithdrawFundsUseCase;
+import com.template.spring.web.dto.AccountDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
 
   private final AccountRepository accountRepository;
 
+  private final AccountMapper accountMapper;
+
   @Override
   public Account withdrawFunds(Long accountNumber, BigDecimal amount)
       throws UnknownAccountException, InsufficientFundsException {
@@ -31,8 +35,8 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public Account createAccount(String accountNumber, BigDecimal amount) {
-    Account account = accountRepository.save(Account.builder().balance(amount).customerId(accountNumber).number(Long.parseLong(accountNumber)).build());
+  public Account createAccount(AccountDTO accountDTO) {
+    Account account = accountRepository.save(accountMapper.AccountDTOToAccount(accountDTO));
     return accountRepository.save(account);
   }
 }
