@@ -36,8 +36,7 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
 
   @Override
   public Account createAccount(AccountDTO accountDTO) {
-    Account account = accountRepository.save(accountMapper.toEntity(accountDTO));
-    return accountRepository.save(account);
+    return accountRepository.save(accountMapper.toEntity(accountDTO));
   }
 
   @Override

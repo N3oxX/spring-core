@@ -1,17 +1,14 @@
 package com.template.spring.domain.repository;
 
-import com.template.spring.domain.model.Account;
 
-import java.util.List;
+import com.template.spring.domain.model.Account;
 
 /**
  * This interface represents the secondary port used to interact with the persistence layer.
  */
-public interface AccountRepository {
+public interface AccountRepository extends GenericRepository<Account, String> {
 
-  Account findByNumber(Long number);
+  //extra endpoints here
+ // Account saveAndDoSomething(Account account);
 
-  Account save(Account account);
-
-  List<Account> getAll();
 }

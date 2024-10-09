@@ -3,8 +3,12 @@ package com.template.spring.infrastructure.persistence.mongo.dbo;
 import java.math.BigDecimal;
 
 import com.template.spring.domain.model.Account;
+import com.template.spring.domain.model.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,17 +19,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "accounts")
 @Getter
 @Setter
-public class AccountDBO {
+@SuperBuilder
+@NoArgsConstructor
+public class AccountDBO extends BaseEntity{
 
-  @Id
   private String number;
   private String customerId;
   private BigDecimal balance;
 
-  public AccountDBO(String number, String customerId, BigDecimal balance) {
-    this.number = number;
-    this.customerId = customerId;
-    this.balance = balance;
-  }
 
 }

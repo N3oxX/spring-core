@@ -3,7 +3,7 @@ package com.template.spring.infrastructure.configuration;
 
 import com.template.spring.application.service.AccountService;
 import com.template.spring.domain.repository.AccountRepository;
-import com.template.spring.infrastructure.persistence.mongo.AccountMongoRepository;
+import com.template.spring.infrastructure.persistence.mongo.MongoRepository;
 import com.template.spring.infrastructure.persistence.mongo.AccountRepositoryImpl;
 import com.template.spring.application.mapper.AccountMapper;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    public AccountRepository accountRepository(AccountMongoRepository accountMongoRepository, AccountMapper accountMapper) {
+    public AccountRepository accountRepository(MongoRepository accountMongoRepository, AccountMapper accountMapper) {
         return new AccountRepositoryImpl(accountMongoRepository, accountMapper);
     }
 

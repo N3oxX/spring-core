@@ -4,16 +4,16 @@ import com.template.spring.application.exception.InsufficientFundsException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
 /**
  * This class represents the domain model for an account.
  */
-@Builder
+@SuperBuilder
 @Getter
-@AllArgsConstructor
-public class Account {
+public class Account extends BaseEntity{
 
   private final long number;
   private final String customerId;

@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 /**
  * This class is a secondary port adapter used to interact with the persistence layer.
  */
-public class InMemoryAccountRepository implements AccountRepository {
+/*
+public class InMemoryAccountRepository  {
 
   private final HashMap<Long, Account> accounts = new HashMap<>();
 
@@ -32,3 +33,4 @@ public class InMemoryAccountRepository implements AccountRepository {
   }
 
 }
+*/

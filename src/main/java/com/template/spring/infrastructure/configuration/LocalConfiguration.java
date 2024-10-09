@@ -3,7 +3,9 @@ package com.template.spring.infrastructure.configuration;
 import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.application.service.AccountService;
 import com.template.spring.domain.repository.AccountRepository;
+/*
 import com.template.spring.infrastructure.persistence.memory.InMemoryAccountRepository;
+*/
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
@@ -27,10 +29,10 @@ public class LocalConfiguration {
     return new AccountService(accountRepository, accountMapper);
   }
 
-  @Bean
+  /*@Bean
   public AccountRepository accountRepository() {
     return new InMemoryAccountRepository();
-  }
+  }*/
 
   @Bean
   public AccountMapper accountMapper() {
