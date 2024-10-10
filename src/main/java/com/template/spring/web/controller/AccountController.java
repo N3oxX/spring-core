@@ -44,7 +44,7 @@ public class AccountController {
 
   @GetMapping("/actions/get-all")
   public List<AccountDTOResponse> getAllAccounts() {
-    List<Account> accounts = managementUseCase.getAllAccounts();
+    List<Account> accounts = managementUseCase.getAll();
     return accounts.stream().map(accountMapper::DTOToResponse).collect(Collectors.toList());
   }
 

@@ -1,6 +1,7 @@
 package com.template.spring.application.service;
 
 import com.template.spring.application.mapper.AccountMapper;
+import com.template.spring.application.usecase.CrudUseCase;
 import com.template.spring.domain.model.Account;
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class represents the primary port implementation within the domain layer.
@@ -40,7 +42,32 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public List<Account> getAllAccounts() {
+  public List<Account> getAll() {
     return accountRepository.getAll();
+  }
+
+  @Override
+  public Optional<Account> getById(String id) throws UnknownAccountException {
+    return accountRepository.getById(id);
+  }
+
+  @Override
+  public boolean existsById(String id) {
+    return accountRepository.existsById(id);
+  }
+
+  @Override
+  public Account create(Account entity) {
+    return accountRepository.save(entity);
+  }
+
+  @Override
+  public Account update(String id, Account entity) throws UnknownAccountException {
+    return accountRepository.update(id,entity);
+  }
+
+  @Override
+  public void delete(String id) {
+      accountRepository.delete(id);
   }
 }

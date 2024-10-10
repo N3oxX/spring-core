@@ -8,10 +8,9 @@ import java.util.List;
 /**
  * This interface represents the primary port used to interact with the domain layer.
  */
-public interface ManagementUseCase {
+public interface ManagementUseCase  extends CrudUseCase<Account, String>{
 
   Account createAccount(AccountDTO accountDTO);
 
-  List<Account> getAllAccounts();
 
 }
