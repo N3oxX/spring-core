@@ -11,10 +11,10 @@ import java.util.Optional;
  */
 public interface CrudUseCase<T extends BaseEntity, S> {
 
-    List<T> getAll();
+    List<T> findAll();
     Optional<T> getById(String  id) throws UnknownAccountException;
     boolean existsById(String id);
     T create(T entity);
-    T update(String id, T entity) throws UnknownAccountException;
+    T update(String id, S entity) throws UnknownAccountException;
     void delete(String id);
 }

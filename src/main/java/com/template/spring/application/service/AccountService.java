@@ -42,7 +42,7 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public List<Account> getAll() {
+  public List<Account> findAll() {
     return accountRepository.getAll();
   }
 
@@ -62,8 +62,8 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public Account update(String id, Account entity) throws UnknownAccountException {
-    return accountRepository.update(id,entity);
+  public Account update(String id, AccountDTO accountDTO) throws UnknownAccountException {
+    return accountRepository.update(id, accountMapper.toEntity(accountDTO));
   }
 
   @Override
