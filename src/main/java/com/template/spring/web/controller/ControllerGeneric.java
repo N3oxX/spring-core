@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface ControllerGeneric<T, R, I> {
 
-	ResponseEntity<List<R>> findAll();
+    ResponseEntity<List<R>> findAll();
 
-	ResponseEntity<R> getById(@PathVariable I id) throws UnknownAccountException;
+    ResponseEntity<R> getById(@PathVariable I id) throws UnknownAccountException;
 
-	ResponseEntity<R> create(@RequestBody T entity);
+    ResponseEntity<R> create(@RequestBody T entity);
 
-	ResponseEntity<R> update(@PathVariable I ID,@RequestBody T entity) throws UnknownAccountException;
+    ResponseEntity<R> update(@PathVariable I ID, @RequestBody T entity) throws UnknownAccountException;
 
-	ResponseEntity<Void> delete(@PathVariable I id);
+    ResponseEntity<Void> delete(@PathVariable I id);
 
 }
 

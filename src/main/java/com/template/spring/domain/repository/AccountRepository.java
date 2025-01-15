@@ -1,7 +1,6 @@
 package com.template.spring.domain.repository;
 
 
-import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.domain.model.Account;
 
 /**

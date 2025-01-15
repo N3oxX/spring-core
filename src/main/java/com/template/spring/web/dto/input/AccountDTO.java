@@ -5,12 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
-
 @Getter
 @SuperBuilder
 @AllArgsConstructor
-public class AccountDTO extends BaseEntity{
+public class AccountDTO extends BaseEntity {
 
     private final long number;
     private final String customerId;

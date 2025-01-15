@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GenericControllerAdvice {
 
 
-  @ExceptionHandler(InsufficientFundsException.class)
-  public ResponseEntity<String> handleInsufficientFundsException(InsufficientFundsException ex) {
-    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-  }
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<String> handleInsufficientFundsException(InsufficientFundsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
-  @ExceptionHandler(UnknownAccountException.class)
-  public ResponseEntity<String> handleUnknownAccountException(UnknownAccountException ex) {
-    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-  }
+    @ExceptionHandler(UnknownAccountException.class)
+    public ResponseEntity<String> handleUnknownAccountException(UnknownAccountException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 }

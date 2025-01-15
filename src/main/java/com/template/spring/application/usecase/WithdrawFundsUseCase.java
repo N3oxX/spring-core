@@ -1,8 +1,8 @@
 package com.template.spring.application.usecase;
 
-import com.template.spring.domain.model.Account;
 import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.domain.model.Account;
 
 import java.math.BigDecimal;
 
@@ -11,8 +11,8 @@ import java.math.BigDecimal;
  */
 public interface WithdrawFundsUseCase {
 
-  Account withdrawFunds(String accountId, BigDecimal amount)
-      throws UnknownAccountException, InsufficientFundsException;
+    Account withdrawFunds(String accountId, BigDecimal amount)
+            throws UnknownAccountException, InsufficientFundsException;
 
 
 }
