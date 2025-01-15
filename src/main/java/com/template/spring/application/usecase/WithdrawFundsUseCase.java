@@ -11,7 +11,8 @@ import java.math.BigDecimal;
  */
 public interface WithdrawFundsUseCase {
 
-  Account withdrawFunds(Long accountNumber, BigDecimal amount)
+  Account withdrawFunds(String accountId, BigDecimal amount)
       throws UnknownAccountException, InsufficientFundsException;
+
 
 }

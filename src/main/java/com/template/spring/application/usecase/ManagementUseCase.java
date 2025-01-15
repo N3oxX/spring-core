@@ -10,7 +10,4 @@ import java.util.List;
  */
 public interface ManagementUseCase  extends CrudUseCase<Account, AccountDTO>{
 
-  Account createAccount(AccountDTO accountDTO);
-
-
 }

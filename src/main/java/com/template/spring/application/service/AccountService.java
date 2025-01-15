@@ -26,9 +26,9 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   private final AccountMapper accountMapper;
 
   @Override
-  public Account withdrawFunds(Long accountNumber, BigDecimal amount)
+  public Account withdrawFunds(String accountId, BigDecimal amount)
       throws UnknownAccountException, InsufficientFundsException {
-    Account account = accountRepository.findByNumber(accountNumber);
+    Account account = accountRepository.getById(accountId);
     if(account == null) {
       throw new UnknownAccountException("Account not found");
     }
@@ -36,10 +36,6 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
     return accountRepository.save(account);
   }
 
-  @Override
-  public Account createAccount(AccountDTO accountDTO) {
-    return accountRepository.save(accountMapper.toEntity(accountDTO));
-  }
 
   @Override
   public List<Account> findAll() {
@@ -47,7 +43,7 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public Optional<Account> getById(String id) throws UnknownAccountException {
+  public Account getById(String id) throws UnknownAccountException {
     return accountRepository.getById(id);
   }
 
@@ -57,8 +53,8 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public Account create(Account entity) {
-    return accountRepository.save(entity);
+  public Account create(AccountDTO accountDTO) {
+    return accountRepository.save(accountMapper.toEntity(accountDTO));
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.template.spring.domain.repository;
 
 
+import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.domain.model.Account;
 
 /**
@@ -9,6 +10,7 @@ import com.template.spring.domain.model.Account;
 public interface AccountRepository extends GenericRepository<Account, String> {
 
   //extra endpoints here
- // Account saveAndDoSomething(Account account);
+  Account findByNumber(Long number) throws UnknownAccountException;
+
 
 }

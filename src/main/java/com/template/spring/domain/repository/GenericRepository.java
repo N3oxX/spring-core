@@ -6,18 +6,14 @@ import com.template.spring.application.exception.UnknownAccountException;
 import java.util.List;
 import java.util.Optional;
 
-interface GenericRepository<T,ID> {
+interface GenericRepository<T,I> {
 
     List<T> getAll();
-    Optional<T> getById(ID id) throws UnknownAccountException;
-    boolean existsById(ID id);
+    T getById(I id) throws UnknownAccountException;
+    boolean existsById(I id);
     T save(T entity);
-    T update(ID id, T entity) throws UnknownAccountException;
-    void delete(ID id);
-
-
-
-    T findByNumber(Long number) throws UnknownAccountException;
+    T update(I id, T entity) throws UnknownAccountException;
+    void delete(I id);
 
 
 }

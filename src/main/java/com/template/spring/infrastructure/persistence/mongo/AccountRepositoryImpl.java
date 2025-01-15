@@ -6,6 +6,7 @@ import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;
 import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,11 @@ public class AccountRepositoryImpl implements AccountRepository {
   }
 
   @Override
-  public Optional<Account> getById(String id) throws UnknownAccountException {
+  public Account getById(String id) throws UnknownAccountException {
     AccountDBO accountDBO = accountMongoRepository.findById(id)
             .orElseThrow(() -> new UnknownAccountException("Account not found with id: " + id));
 
-    return Optional.of(accountMapper.DBOToEntity(accountDBO));
+    return accountMapper.DBOToEntity(accountDBO);
   }
 
   @Override
@@ -57,6 +58,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     if (accountDBO == null) {
       return null;
     }
+    accountMapper.updateAccountFields(entity, accountDBO);
+
     return accountMapper.DBOToEntity(accountMongoRepository.save(accountDBO));
 
   }

@@ -6,22 +6,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Optional;
-
-public interface ControllerGeneric<T, ID> {
-
-	ResponseEntity<List<T>> findAll();
 
 
-	ResponseEntity<Optional<T>> getById(@PathVariable ID id) throws UnknownAccountException;
+public interface ControllerGeneric<T, R, I> {
 
-	ResponseEntity<T> create(@RequestBody T entity);
+	ResponseEntity<List<R>> findAll();
 
-	ResponseEntity<Boolean> existsById(@PathVariable ID id);
+	ResponseEntity<R> getById(@PathVariable I id) throws UnknownAccountException;
 
-	ResponseEntity<T> update(@PathVariable ID ID,@RequestBody T entity) throws UnknownAccountException;
+	ResponseEntity<R> create(@RequestBody T entity);
 
-	ResponseEntity<Void> delete(@PathVariable ID id);
+	ResponseEntity<R> update(@PathVariable I ID,@RequestBody T entity) throws UnknownAccountException;
+
+	ResponseEntity<Void> delete(@PathVariable I id);
 
 }
 

@@ -7,7 +7,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AccountDTOResponse {
 
+
     private final long accountNumber;
     private final long balanceInCents;
+    private final String identifier;
+
 
 }

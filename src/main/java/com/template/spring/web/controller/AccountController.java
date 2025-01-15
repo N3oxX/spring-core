@@ -9,11 +9,13 @@ import com.template.spring.application.exception.InsufficientFundsException;
 import com.template.spring.application.exception.UnknownAccountException;
 import com.template.spring.application.usecase.WithdrawFundsUseCase;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,58 +25,51 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
-public class AccountController implements ControllerGeneric<AccountDTO, String> {
+public class AccountController implements ControllerGeneric<AccountDTO,AccountDTOResponse, String> {
 
   private final WithdrawFundsUseCase withdrawFundsUseCase;
   private final ManagementUseCase managementUseCase;
 
   private final AccountMapper accountMapper;
 
-  @PostMapping("/{accountNumber}/actions/withdraw")
-  public AccountDTOResponse withdrawFunds(@PathVariable long accountNumber, @RequestBody Long amountInCents)
+
+  @Override
+  @PostMapping
+  public ResponseEntity<AccountDTOResponse> create(@RequestBody AccountDTO accountDTO) {
+    Account account = managementUseCase.create(accountDTO);
+    URI location = URI.create("/accounts/" + account.getId());
+    return ResponseEntity.created(location).body(accountMapper.DTOToResponse(account));
+  }
+
+
+  @Override
+  @GetMapping("/{id}")
+  public ResponseEntity<AccountDTOResponse> getById(@PathVariable String id) throws UnknownAccountException {
+    AccountDTOResponse account = accountMapper.DTOToResponse(managementUseCase.getById(id));
+    return ResponseEntity.ok(account);
+  }
+
+  @PatchMapping("/{accountNumber}/actions/withdraw/{amountInCents}")
+  public AccountDTOResponse withdrawFunds(@PathVariable String accountNumber, @PathVariable Long amountInCents)
       throws UnknownAccountException, InsufficientFundsException {
     Account account = withdrawFundsUseCase.withdrawFunds(accountNumber,
         BigDecimal.valueOf(amountInCents / 100));
     return accountMapper.DTOToResponse(account);
   }
 
-  @PostMapping("/actions/create")
-  public AccountDTOResponse createAccount(@RequestBody AccountDTO accountDTO) {
-    Account account = managementUseCase.createAccount(accountDTO);
-    return accountMapper.DTOToResponse(account);
-  }
-
   @Override
   @GetMapping("/all")
-  public ResponseEntity<List<AccountDTO>> findAll() {
-    return  ResponseEntity.ok(managementUseCase.findAll().stream().map(accountMapper::toDto).collect(Collectors.toList()));
+  public ResponseEntity<List<AccountDTOResponse>> findAll() {
+    return  ResponseEntity.ok(managementUseCase.findAll().stream().map(accountMapper::DTOToResponse).collect(Collectors.toList()));
   }
 
-  @Override
-  @GetMapping("/{id}")
-  public ResponseEntity<Optional<AccountDTO>> getById(@PathVariable String id) throws UnknownAccountException {
-    Optional<AccountDTO> accountOptional = managementUseCase.getById(id).map(accountMapper::toDto);
-    return ResponseEntity.ok(accountOptional);
-  }
-
-  @Override
-  @GetMapping("/exist/{id}")
-  public ResponseEntity<Boolean> existsById(@PathVariable String id) {
-    return ResponseEntity.ok(managementUseCase.existsById(id));
-  }
 
   @Override
   @PutMapping("/{id}")
-  public ResponseEntity<AccountDTO> update(@PathVariable String id, @RequestBody AccountDTO entity) throws UnknownAccountException {
-    return ResponseEntity.ok(accountMapper.toDto(managementUseCase.update(id, entity)));
+  public ResponseEntity<AccountDTOResponse> update(@PathVariable String id, @RequestBody AccountDTO entity) throws UnknownAccountException {
+    return ResponseEntity.ok(accountMapper.DTOToResponse(managementUseCase.update(id, entity)));
   }
 
-  @Override
-  @PostMapping
-  public ResponseEntity<AccountDTO> create(AccountDTO entity) {
-    Account account = managementUseCase.createAccount(entity);
-    return  ResponseEntity.ok(accountMapper.toDto(account));
-  }
 
   @Override
   @DeleteMapping("/{id}")
