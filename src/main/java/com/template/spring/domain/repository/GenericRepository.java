@@ -10,10 +10,8 @@ interface GenericRepository<T,I> {
 
     List<T> getAll();
     T getById(I id) throws UnknownAccountException;
-    boolean existsById(I id);
     T save(T entity);
     T update(I id, T entity) throws UnknownAccountException;
     void delete(I id);
-
 
 }

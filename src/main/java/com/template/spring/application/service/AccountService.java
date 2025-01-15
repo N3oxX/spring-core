@@ -25,21 +25,10 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
 
   private final AccountMapper accountMapper;
 
-  @Override
-  public Account withdrawFunds(String accountId, BigDecimal amount)
-      throws UnknownAccountException, InsufficientFundsException {
-    Account account = accountRepository.getById(accountId);
-    if(account == null) {
-      throw new UnknownAccountException("Account not found");
-    }
-    account.updateBalance(amount.negate());
-    return accountRepository.save(account);
-  }
-
 
   @Override
-  public List<Account> findAll() {
-    return accountRepository.getAll();
+  public Account create(AccountDTO accountDTO) {
+    return accountRepository.save(accountMapper.toEntity(accountDTO));
   }
 
   @Override
@@ -48,19 +37,29 @@ public class AccountService implements WithdrawFundsUseCase, ManagementUseCase {
   }
 
   @Override
-  public boolean existsById(String id) {
-    return accountRepository.existsById(id);
+  public List<Account> findAll() {
+    return accountRepository.getAll();
   }
 
-  @Override
-  public Account create(AccountDTO accountDTO) {
-    return accountRepository.save(accountMapper.toEntity(accountDTO));
-  }
+
 
   @Override
   public Account update(String id, AccountDTO accountDTO) throws UnknownAccountException {
     return accountRepository.update(id, accountMapper.toEntity(accountDTO));
   }
+
+
+  @Override
+  public Account withdrawFunds(String accountId, BigDecimal amount)
+          throws UnknownAccountException, InsufficientFundsException {
+    Account account = accountRepository.getById(accountId);
+    if(account == null) {
+      throw new UnknownAccountException("Account not found");
+    }
+    account.updateBalance(amount.negate());
+    return accountRepository.save(account);
+  }
+
 
   @Override
   public void delete(String id) {

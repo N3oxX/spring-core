@@ -9,8 +9,5 @@ import com.template.spring.domain.model.Account;
  */
 public interface AccountRepository extends GenericRepository<Account, String> {
 
-  //extra endpoints here
-  Account findByNumber(Long number) throws UnknownAccountException;
-
 
 }

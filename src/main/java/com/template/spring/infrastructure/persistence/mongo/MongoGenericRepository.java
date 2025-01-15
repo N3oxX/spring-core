@@ -5,10 +5,6 @@ import com.template.spring.infrastructure.persistence.mongo.dbo.AccountDBO;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-/*@Repository
-public interface AccountMongoGENERICRepository extends MongoRepository<AccountDBO, String> {
-
-}*/
 
 @Repository
 public interface MongoGenericRepository<T extends BaseEntity> extends MongoRepository<T, String> {

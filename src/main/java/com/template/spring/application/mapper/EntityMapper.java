@@ -8,7 +8,6 @@ interface EntityMapper<E, T, B> {
 
     E DBOToEntity(B dbo);
 
-    T toDto(E entity);
 
 
 }

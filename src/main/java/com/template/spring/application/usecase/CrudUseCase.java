@@ -11,10 +11,9 @@ import java.util.Optional;
  */
 public interface CrudUseCase<T extends BaseEntity, S> {
 
-    List<T> findAll();
-    T getById(String  id) throws UnknownAccountException;
-    boolean existsById(String id);
     T create(S entity);
+    T getById(String  id) throws UnknownAccountException;
+    List<T> findAll();
     T update(String id, S entity) throws UnknownAccountException;
     void delete(String id);
 }

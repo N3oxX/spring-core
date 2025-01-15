@@ -41,11 +41,6 @@ public class AccountRepositoryImpl implements AccountRepository {
   }
 
   @Override
-  public boolean existsById(String id) {
-    return accountMongoRepository.existsById(id);
-  }
-
-  @Override
   public Account save(Account account) {
     AccountDBO accountDBO = accountMongoRepository.save(accountMapper.EntityToDBO(account));
     return accountMapper.DBOToEntity(accountDBO);
@@ -67,16 +62,6 @@ public class AccountRepositoryImpl implements AccountRepository {
   @Override
   public void delete(String id) {
     accountMongoRepository.deleteById(id);
-  }
-
-  @Override
-  public Account findByNumber(Long number) throws UnknownAccountException {
-    AccountDBO accountDBO = accountMongoRepository.findByNumber(String.valueOf(number))
-            .orElseThrow(() -> new UnknownAccountException("Account not found"));
-    if (accountDBO == null) {
-      return null;
-    }
-    return accountMapper.DBOToEntity(accountDBO);
   }
 
 
