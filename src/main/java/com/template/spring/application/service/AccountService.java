@@ -1,7 +1,7 @@
 package com.template.spring.application.service;
 
-import com.template.spring.application.exception.InsufficientFundsException;
-import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.InsufficientFundsException;
+import com.template.spring.application.UnknownAccountException;
 import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.application.usecase.ManagementUseCase;
 import com.template.spring.application.usecase.WithdrawFundsUseCase;

@@ -1,7 +1,7 @@
 package com.template.spring.web.controller;
 
-import com.template.spring.application.exception.InsufficientFundsException;
-import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.InsufficientFundsException;
+import com.template.spring.application.UnknownAccountException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

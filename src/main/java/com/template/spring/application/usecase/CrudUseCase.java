@@ -1,6 +1,6 @@
 package com.template.spring.application.usecase;
 
-import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.UnknownAccountException;
 import com.template.spring.domain.model.BaseEntity;
 
 import java.util.List;

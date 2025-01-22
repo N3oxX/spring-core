@@ -1,6 +1,6 @@
 package com.template.spring.infrastructure.persistence.mongo;
 
-import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.UnknownAccountException;
 import com.template.spring.application.mapper.AccountMapper;
 import com.template.spring.domain.model.Account;
 import com.template.spring.domain.repository.AccountRepository;

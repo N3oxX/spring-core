@@ -1,7 +1,7 @@
 package com.template.spring.application.usecase;
 
-import com.template.spring.application.exception.InsufficientFundsException;
-import com.template.spring.application.exception.UnknownAccountException;
+import com.template.spring.application.InsufficientFundsException;
+import com.template.spring.application.UnknownAccountException;
 import com.template.spring.domain.model.Account;
 
 import java.math.BigDecimal;

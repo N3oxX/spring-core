@@ -1,6 +1,6 @@
 package com.template.spring.domain.model;
 
-import com.template.spring.application.exception.InsufficientFundsException;
+import com.template.spring.application.InsufficientFundsException;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
