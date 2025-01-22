@@ -1,11 +1,8 @@
 package com.template.spring.application.usecase;
 
-import com.template.spring.domain.model.Account;
-import com.template.spring.web.dto.input.AccountDTO;
-
 /**
  * This interface represents the primary port used to interact with the domain layer.
  */
-public interface ManagementUseCase extends CrudUseCase<Account, AccountDTO> {
-
+public interface ManagementUseCase {
+    //Additional use cases here
 }

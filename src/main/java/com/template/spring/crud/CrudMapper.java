@@ -1,9 +1,23 @@
 package com.template.spring.crud;
 
-public interface CrudMapper<T, DTO, DBO> {
-    T toEntity(DTO dto);  // Convert DTO to Entity
-    DTO toDto(T entity);  // Convert Entity to DTO
-    T DBOToEntity(DBO dbo);
-    DBO EntityToDBO(T entity);
-    void updateFields(T source, DBO target);
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
+public interface CrudMapper<T, D, B, R> {
+    T DTOToEntity(D dto);
+
+    D EntityToDTO(T entity);
+
+    T DBOToEntity(B dbo);
+
+    B EntityToDBO(T entity);
+
+    R DTOToResponse(D entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "version", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    void updateDBOFromEntity(T entity, @MappingTarget B dbo);
 }
