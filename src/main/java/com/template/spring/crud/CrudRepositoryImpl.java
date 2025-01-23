@@ -2,6 +2,7 @@ package com.template.spring.crud;
 
 
 import com.template.spring.application.exception.UnknownEntityException;
+import com.template.spring.domain.model.Employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,9 +34,8 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
 
     private final JpaRepository<B, I> repository;
     private final CrudMapper<T, D, B, R> mapper;
-    // private final MongoTemplate mongoTemplate;
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
     @Override
     public T save(T entity) {
         B dbo = mapper.EntityToDBO(entity);
@@ -54,9 +54,7 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
     public T update(I id, T entity) throws UnknownEntityException {
         B dbo = repository.findById(id)
                 .orElseThrow(() -> new UnknownEntityException("Entity not found"));
-        if (dbo == null) {
-            return null;
-        }
+
         mapper.updateDBOFromEntity(entity, dbo);
 
         return mapper.DBOToEntity(repository.save(dbo));
@@ -105,7 +103,7 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Page<T> findPaginated(T searchFields, Pageable pageable) {
+    public Page<T> findPaginated(T searchFields, Pageable pageable) throws IllegalAccessException {
         // Get the class type of the entity
         Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[3];
         Class<B> entityClass = (Class<B>) type;
@@ -120,17 +118,10 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
         if (searchFields != null) {
             for (Field field : searchFields.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
-                try {
-                    if ("id".equalsIgnoreCase(field.getName())) {
-                        continue;
-                    }
                     Object value = field.get(searchFields);
                     if (value != null) {
                         predicates.add(cb.equal(root.get(field.getName()), value));
                     }
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
             }
         }
 
@@ -139,17 +130,16 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
         }
 
         // Apply sorting from Pageable
-        if (pageable.getSort() != null) {
-            List<Order> orders = new ArrayList<>();
-            pageable.getSort().forEach(order -> {
-                if (order.isAscending()) {
-                    orders.add(cb.asc(root.get(order.getProperty())));
-                } else {
-                    orders.add(cb.desc(root.get(order.getProperty())));
-                }
-            });
-            criteriaQuery.orderBy(orders);
-        }
+        pageable.getSort();
+        List<Order> orders = new ArrayList<>();
+        pageable.getSort().forEach(order -> {
+            if (order.isAscending()) {
+                orders.add(cb.asc(root.get(order.getProperty())));
+            } else {
+                orders.add(cb.desc(root.get(order.getProperty())));
+            }
+        });
+        criteriaQuery.orderBy(orders);
 
         // Apply pagination
         TypedQuery<B> query = entityManager.createQuery(criteriaQuery);

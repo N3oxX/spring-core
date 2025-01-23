@@ -21,6 +21,6 @@ public interface CrudService<I, D> {
 
     D patch(I id, Map<String, Object> updates) throws UnknownEntityException, IllegalArgumentException;
 
-    Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto);
+    Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto) throws IllegalAccessException;
 
 }

@@ -1,6 +1,6 @@
-package com.template.spring.infrastructure.persistence.mongo.repository;
+package com.template.spring.infrastructure.persistence.repository;
 
-import com.template.spring.infrastructure.persistence.mongo.dbo.EmployeeDBO;
+import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

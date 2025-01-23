@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class CrudServiceImpl<T, I, D, B, R> implements CrudService<I, D> {
+public class CrudServiceImpl<T, I, D, B, R> implements CrudService<I, D> {
 
     private final CrudRepositoryImpl<T, I, D, B, R> repository;
     private final CrudMapper<T, D, B, R> mapper;
@@ -59,7 +59,7 @@ public abstract class CrudServiceImpl<T, I, D, B, R> implements CrudService<I, D
 
 
     @Override
-    public Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto) {
+    public Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto) throws IllegalAccessException {
         Pageable pageable = PageRequest.of(paginatedDto.getCurrentPage(), paginatedDto.getPageSize(),
                 Sort.by(Sort.Direction.fromString(paginatedDto.getOrder().getOrderType()),
                         paginatedDto.getOrder().getColumn()));

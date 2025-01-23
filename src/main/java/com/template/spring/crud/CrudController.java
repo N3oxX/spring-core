@@ -66,7 +66,7 @@ public abstract class CrudController<T, I, D, B, R> {
     }
 
     @PostMapping("/paginated")
-    public Page<R> getPaginated(@RequestBody EmployeePaginatedDto<D> paginatedDto) {
+    public Page<R> getPaginated(@RequestBody EmployeePaginatedDto<D> paginatedDto) throws IllegalAccessException {
         return service.getPaginated(paginatedDto).map(mapper::DTOToResponse);
     }
 

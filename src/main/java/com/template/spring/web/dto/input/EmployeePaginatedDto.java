@@ -1,5 +1,6 @@
 package com.template.spring.web.dto.input;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.jackson.Jacksonized;
@@ -22,6 +23,7 @@ public class EmployeePaginatedDto<D> {
     @Getter
     @Setter
     @Jacksonized
+    @AllArgsConstructor
     public static class Order {
 
         private String column;
