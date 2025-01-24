@@ -113,9 +113,7 @@ public class EmployeeRepositoryTest {
     public void testGetByIdThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.getById(id);
-        });
+        assertThrows(UnknownEntityException.class, () -> employeeRepository.getById(id));
     }
 
     @ParameterizedTest
@@ -139,15 +137,13 @@ public class EmployeeRepositoryTest {
     public void testUpdateThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.update(id, employee);
-        });
+        assertThrows(UnknownEntityException.class, () -> employeeRepository.update(id, employee));
     }
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
     public void testGetAll(Employee employee, EmployeeDBO employeeDBO, String id) {
-        List<EmployeeDBO> employeeDBOs = Arrays.asList(employeeDBO);
+        List<EmployeeDBO> employeeDBOs = Collections.singletonList(employeeDBO);
         when(repository.findAll()).thenReturn(employeeDBOs);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
 
@@ -193,9 +189,7 @@ public class EmployeeRepositoryTest {
         Map<String, Object> updates = new HashMap<>();
         updates.put("name", "John Doe Updated");
 
-        assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.patch(id, updates);
-        });
+        assertThrows(UnknownEntityException.class, () -> employeeRepository.patch(id, updates));
     }
 
     @ParameterizedTest
@@ -206,9 +200,7 @@ public class EmployeeRepositoryTest {
         Map<String, Object> updates = new HashMap<>();
         updates.put("id", "newId");
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            employeeRepository.patch(id, updates);
-        });
+        assertThrows(IllegalArgumentException.class, () -> employeeRepository.patch(id, updates));
     }
 
     @ParameterizedTest
@@ -219,9 +211,7 @@ public class EmployeeRepositoryTest {
 
         when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            employeeRepository.patch(id, updates);
-        });
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> employeeRepository.patch(id, updates));
 
         assertTrue(exception.getMessage().contains("Failed to set field: nonExistentField"));
 
@@ -230,6 +220,7 @@ public class EmployeeRepositoryTest {
     }
 
     @ParameterizedTest
+    @SuppressWarnings("unchecked")
     @MethodSource("provideFindPaginatedTestCases")
     public void testFindPaginated(Employee searchFields, Pageable pageable, EmployeeDBO employeeDBO) throws IllegalAccessException {
 
