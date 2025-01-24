@@ -110,10 +110,10 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
         if (searchFields != null) {
             for (Field field : searchFields.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
-                    Object value = field.get(searchFields);
-                    if (value != null) {
-                        predicates.add(cb.equal(root.get(field.getName()), value));
-                    }
+                Object value = field.get(searchFields);
+                if (value != null) {
+                    predicates.add(cb.equal(root.get(field.getName()), value));
+                }
             }
         }
 

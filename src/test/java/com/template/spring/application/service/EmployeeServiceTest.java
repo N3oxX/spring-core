@@ -2,28 +2,29 @@ package com.template.spring.application.service;
 
 import com.template.spring.application.exception.UnknownEntityException;
 import com.template.spring.application.mapper.EmployeeMapper;
-import com.template.spring.application.service.CrudRepositoryImpl;
-import com.template.spring.application.service.CrudServiceImpl;
+import com.template.spring.domain.model.Employee;
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 import com.template.spring.web.dto.input.EmployeeDTO;
 import com.template.spring.web.dto.input.EmployeePaginatedDto;
-import com.template.spring.domain.model.Employee;
-
 import com.template.spring.web.dto.output.EmployeeDTOResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.template.spring.utils.TestParametersProvider.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -38,12 +39,39 @@ public class EmployeeServiceTest {
     @InjectMocks
     private CrudServiceImpl<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> employeeService;
 
+    private static Stream<Arguments> provideTestCases() {
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
+                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, "92124e84-sa14-4n34-a452-858346457457")
+        );
+    }
+
+    private static Stream<Arguments> providePatchTestCases() {
+
+        Map<String, Object> updates = Map.of("name", "John Updated", "email", "updated@example.com");
+
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, updates, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
+                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, updates, "92124e84-sa14-4n34-a452-858346457457")
+        );
+    }
+
+    private static Stream<Arguments> providePaginatedTestCases() {
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("name"));
+        Page<Employee> paginatedEntities = new PageImpl<>(List.of(EMPLOYEE1), pageable, 1);
+
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, pageable, paginatedEntities),
+                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, pageable, paginatedEntities)
+        );
+    }
 
     @BeforeEach
     public void setUp() {
-        employeeService = new CrudServiceImpl<>(repository, mapper) {};
+        employeeService = new CrudServiceImpl<>(repository, mapper) {
+        };
     }
-
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
@@ -143,35 +171,6 @@ public class EmployeeServiceTest {
         assertNotNull(employeePage);
         assertEquals(paginatedEntities.getTotalElements(), employeePage.getTotalElements());
         verify(repository).findPaginated(employee, pageable);
-    }
-
-
-    private static Stream<Arguments> provideTestCases() {
-        return Stream.of(
-                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
-                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, "92124e84-sa14-4n34-a452-858346457457")
-        );
-    }
-
-    private static Stream<Arguments> providePatchTestCases() {
-
-        Map<String, Object> updates = Map.of("name", "John Updated", "email", "updated@example.com");
-
-        return Stream.of(
-                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, updates, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
-                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, updates, "92124e84-sa14-4n34-a452-858346457457")
-        );
-    }
-
-    private static Stream<Arguments> providePaginatedTestCases() {
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("name"));
-        Page<Employee> paginatedEntities = new PageImpl<>(List.of(EMPLOYEE1), pageable, 1);
-
-        return Stream.of(
-                Arguments.of(EMPLOYEE1, EMPLOYEE_DTO1, pageable, paginatedEntities),
-                Arguments.of(EMPLOYEE2, EMPLOYEE_DTO2, pageable, paginatedEntities)
-        );
     }
 
 

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.template.spring.application.exception.UnknownEntityException;
 import com.template.spring.application.mapper.EmployeeMapper;
 import com.template.spring.application.service.EmployeeService;
-import com.template.spring.domain.model.Employee;
-import com.template.spring.utils.TestParametersProvider;
 import com.template.spring.web.dto.input.EmployeeDTO;
 import com.template.spring.web.dto.input.EmployeePaginatedDto;
 import com.template.spring.web.dto.output.EmployeeDTOResponse;
@@ -27,14 +25,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.template.spring.utils.TestParametersProvider.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(EmployeeController.class)
 public class EmployeeControllerTest {
@@ -51,13 +49,54 @@ public class EmployeeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static Stream<Arguments> provideInvalidEmailData() {
+        return Stream.of(
+                Arguments.of(
+                        EMPLOYEE_EMAIL_WRONG1
+                ),
+                Arguments.of(
+                        EMPLOYEE_EMAIL_WRONG2
+                )
+        );
+    }
+
+    private static Stream<Arguments> provideEmployeeData() {
+        return Stream.of(
+                Arguments.of(
+                        "92124e84-sa14-4n34-a452-858346457457",
+                        EMPLOYEE_DTO1,
+                        EMPLOYEE_RESPONSE_DTO1
+                ),
+                Arguments.of(
+                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
+                        EMPLOYEE_DTO2,
+                        EMPLOYEE_RESPONSE_DTO2
+                )
+        );
+    }
+
+    private static Stream<Arguments> provideEmployeeDataPatch() {
+        return Stream.of(
+                Arguments.of(
+                        "92124e84-sa14-4n34-a452-858346457457",
+                        EMPLOYEE_DTO1,
+                        EMPLOYEE_RESPONSE_DTO_PATCH1
+
+                ),
+                Arguments.of(
+                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
+                        EMPLOYEE_DTO2,
+                        EMPLOYEE_RESPONSE_DTO_PATCH2
+                )
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
     public void testCreateEmployee(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
 
         Mockito.when(service.create(any(EmployeeDTO.class))).thenReturn(inputDto);
         Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
-
 
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -120,7 +159,6 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$[0].phone").value(inputDto.getPhone()));
     }
 
-
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
     public void testGetEmployeeById(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
@@ -136,8 +174,7 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.phone").value(dto.getPhone()));
     }
 
-    @ParameterizedTest
-    @MethodSource("provideEmployeeData")
+    @Test
     public void testGetEmployeeById_NotFound() throws Exception {
         String id = UUID.randomUUID().toString();
         String errorMessage = "Employee not found";
@@ -151,17 +188,15 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.details").value("The requested employee could not be found."));
     }
 
-
-
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
     public void testUpdateEmployee_InvalidField(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
         String errorMessage = "Invalid field provided";
 
-        // Mock behavior to throw IllegalArgumentException
+
         Mockito.when(service.update(eq(id), any(EmployeeDTO.class))).thenThrow(new IllegalArgumentException(errorMessage));
 
-        // Perform PUT request and expect IllegalArgumentException
+
         mockMvc.perform(put("/employees/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
@@ -169,7 +204,6 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.message").value(errorMessage))
                 .andExpect(jsonPath("$.details").value("The field don't exist."));
     }
-
 
     @Test
     public void testDeleteEmployee() throws Exception {
@@ -208,7 +242,7 @@ public class EmployeeControllerTest {
         paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "ASC"));
         paginatedDto.setSearchFields(searchFields);
         List<EmployeeDTO> employees = List.of(
-               dto
+                dto
         );
         Page<EmployeeDTO> employeePage = new PageImpl<>(employees, PageRequest.of(0, 5, Sort.by("name")), employees.size());
 
@@ -229,7 +263,6 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value(dto.getName()))
                 .andExpect(jsonPath("$.content[0].email").value(dto.getEmail()));
     }
-
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
@@ -259,48 +292,5 @@ public class EmployeeControllerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value(errorMessage))
                 .andExpect(jsonPath("$.details").value("Access to the field is not allowed."));
-    }
-
-
-    private static Stream<Arguments> provideInvalidEmailData() {
-        return Stream.of(
-                Arguments.of(
-                        EMPLOYEE_EMAIL_WRONG1
-                ),
-                Arguments.of(
-                        EMPLOYEE_EMAIL_WRONG2
-                )
-        );
-    }
-
-    private static Stream<Arguments> provideEmployeeData() {
-        return Stream.of(
-                Arguments.of(
-                        "92124e84-sa14-4n34-a452-858346457457",
-                        EMPLOYEE_DTO1,
-                        EMPLOYEE_RESPONSE_DTO1
-                ),
-                Arguments.of(
-                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
-                        EMPLOYEE_DTO2,
-                        EMPLOYEE_RESPONSE_DTO2
-                )
-        );
-    }
-
-    private static Stream<Arguments> provideEmployeeDataPatch() {
-        return Stream.of(
-                Arguments.of(
-                        "92124e84-sa14-4n34-a452-858346457457",
-                        EMPLOYEE_DTO1,
-                        EMPLOYEE_RESPONSE_DTO_PATCH1
-
-                ),
-                Arguments.of(
-                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
-                        EMPLOYEE_DTO2,
-                        EMPLOYEE_RESPONSE_DTO_PATCH2
-                )
-        );
     }
 }

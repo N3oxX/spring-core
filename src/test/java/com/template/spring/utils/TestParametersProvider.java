@@ -1,16 +1,9 @@
 package com.template.spring.utils;
 
-import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 import com.template.spring.domain.model.Employee;
+import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 import com.template.spring.web.dto.input.EmployeeDTO;
 import com.template.spring.web.dto.output.EmployeeDTOResponse;
-import org.junit.jupiter.params.provider.Arguments;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import java.util.UUID;
-import java.util.stream.Stream;
 
 public class TestParametersProvider {
 
@@ -46,8 +39,8 @@ public class TestParametersProvider {
     public static final EmployeeDTO EMPLOYEE_EMAIL_WRONG1 = EmployeeDTO.builder().name("Ramon").email("wrong email").phone("68303950243").build();
     public static final EmployeeDTO EMPLOYEE_EMAIL_WRONG2 = EmployeeDTO.builder().name("Ramon").email("i[w]@g.com").phone("68303950243").build();
 
-     public static final EmployeeDTOResponse EMPLOYEE_RESPONSE_DTO1 = EmployeeDTOResponse.builder()
-               .name(EMPLOYEE_DTO1.getName())
+    public static final EmployeeDTOResponse EMPLOYEE_RESPONSE_DTO1 = EmployeeDTOResponse.builder()
+            .name(EMPLOYEE_DTO1.getName())
             .email(EMPLOYEE_DTO1.getEmail())
             .phone(EMPLOYEE_DTO1.getPhone())
             .build();

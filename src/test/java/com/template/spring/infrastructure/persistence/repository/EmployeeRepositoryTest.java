@@ -4,18 +4,19 @@ package com.template.spring.infrastructure.persistence.repository;
 import com.template.spring.application.exception.UnknownEntityException;
 import com.template.spring.application.mapper.EmployeeMapper;
 import com.template.spring.domain.model.Employee;
-
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
-
 import org.junit.jupiter.api.BeforeEach;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -45,6 +46,36 @@ public class EmployeeRepositoryTest {
     @InjectMocks
     private EmployeeRepository employeeRepository;
 
+    public static Stream<Arguments> provideTestCases() {
+
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, EMPLOYEE_DBO1, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
+                Arguments.of(EMPLOYEE2, EMPLOYEE_DBO2, "92124e84-sa14-4n34-a452-858346457457")
+        );
+    }
+
+    public static Stream<Arguments> provideFindPaginatedTestCases() {
+
+        Pageable pageable10 = PageRequest.of(0, 10);
+        Pageable pageableUnsorted = PageRequest.of(0, 10, Sort.unsorted());
+        Pageable pageableAsc = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
+        Pageable pageableDes = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("name")));
+
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, pageable10, null, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableUnsorted, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableAsc, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableDes, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE2, pageable10, null, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableUnsorted, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableAsc, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableDes, EMPLOYEE_DBO2),
+                Arguments.of(null, pageableDes, EMPLOYEE_DBO2)
+        );
+    }
+
     @BeforeEach
     public void setUp() {
         employeeRepository = new EmployeeRepository(repository, mapper, entityManager);
@@ -64,9 +95,9 @@ public class EmployeeRepositoryTest {
         verify(repository).save(employeeDBO);
     }
 
-   @ParameterizedTest
-   @MethodSource("provideTestCases")
-   public void testGetById(Employee employee, EmployeeDBO employeeDBO, String id) throws UnknownEntityException {
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testGetById(Employee employee, EmployeeDBO employeeDBO, String id) throws UnknownEntityException {
         when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
 
@@ -77,10 +108,9 @@ public class EmployeeRepositoryTest {
         verify(repository).findById(id);
     }
 
-
     @ParameterizedTest
     @MethodSource("provideTestCases")
-    public void testGetByIdThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id){
+    public void testGetByIdThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(UnknownEntityException.class, () -> {
@@ -103,6 +133,7 @@ public class EmployeeRepositoryTest {
         verify(repository).findById(id);
         verify(repository).save(employeeDBO);
     }
+
     @ParameterizedTest
     @MethodSource("provideTestCases")
     public void testUpdateThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
@@ -112,7 +143,6 @@ public class EmployeeRepositoryTest {
             employeeRepository.update(id, employee);
         });
     }
-
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
@@ -130,7 +160,7 @@ public class EmployeeRepositoryTest {
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
-    public void testDelete(Employee employee, EmployeeDBO employeeDBO, String id)  {
+    public void testDelete(Employee employee, EmployeeDBO employeeDBO, String id) {
         doNothing().when(repository).deleteById(id);
 
         employeeRepository.delete(id);
@@ -140,7 +170,7 @@ public class EmployeeRepositoryTest {
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
-    public void testPatch(Employee employee, EmployeeDBO employeeDBO, String id)  throws UnknownEntityException {
+    public void testPatch(Employee employee, EmployeeDBO employeeDBO, String id) throws UnknownEntityException {
         when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
         when(repository.save(employeeDBO)).thenReturn(employeeDBO);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
@@ -157,7 +187,7 @@ public class EmployeeRepositoryTest {
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
-    public void testPatchThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id)  {
+    public void testPatchThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
         when(repository.findById(id)).thenReturn(Optional.empty());
 
         Map<String, Object> updates = new HashMap<>();
@@ -199,7 +229,6 @@ public class EmployeeRepositoryTest {
         verifyNoMoreInteractions(repository);
     }
 
-
     @ParameterizedTest
     @MethodSource("provideFindPaginatedTestCases")
     public void testFindPaginated(Employee searchFields, Pageable pageable, EmployeeDBO employeeDBO) throws IllegalAccessException {
@@ -227,35 +256,5 @@ public class EmployeeRepositoryTest {
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(1, result.getContent().size());
-    }
-
-    public static Stream<Arguments> provideTestCases() {
-
-        return Stream.of(
-                Arguments.of(EMPLOYEE1 ,EMPLOYEE_DBO1, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
-                Arguments.of(EMPLOYEE2 ,EMPLOYEE_DBO2, "92124e84-sa14-4n34-a452-858346457457")
-        );
-    }
-
-    public static Stream<Arguments> provideFindPaginatedTestCases() {
-
-        Pageable pageable10 = PageRequest.of(0, 10);
-        Pageable pageableUnsorted = PageRequest.of(0, 10, Sort.unsorted());
-        Pageable pageableAsc = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
-        Pageable pageableDes = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("name")));
-
-        return Stream.of(
-                Arguments.of(EMPLOYEE1, pageable10, null ,EMPLOYEE_DBO1),
-                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO1),
-                Arguments.of(EMPLOYEE1, pageableUnsorted, EMPLOYEE_DBO1),
-                Arguments.of(EMPLOYEE1, pageableAsc, EMPLOYEE_DBO1),
-                Arguments.of(EMPLOYEE1, pageableDes, EMPLOYEE_DBO1),
-                Arguments.of(EMPLOYEE2, pageable10, null ,EMPLOYEE_DBO2),
-                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO2),
-                Arguments.of(EMPLOYEE2, pageableUnsorted, EMPLOYEE_DBO2),
-                Arguments.of(EMPLOYEE2, pageableAsc, EMPLOYEE_DBO2),
-                Arguments.of(EMPLOYEE2, pageableDes, EMPLOYEE_DBO2),
-                Arguments.of(null, pageableDes, EMPLOYEE_DBO2)
-        );
     }
 }
