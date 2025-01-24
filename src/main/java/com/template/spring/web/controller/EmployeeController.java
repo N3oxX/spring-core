@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/employees")
 public class EmployeeController extends CrudController<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> {
 
-    EmployeeService service;
+    final EmployeeService service;
 
     public EmployeeController(EmployeeService service, EmployeeMapper mapper) {
         super(service, mapper);

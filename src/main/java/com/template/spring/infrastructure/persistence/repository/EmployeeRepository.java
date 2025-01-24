@@ -16,14 +16,9 @@ import javax.persistence.EntityManager;
 @Repository
 public class EmployeeRepository extends CrudRepositoryImpl<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> implements EmployeeRepositoryAdapter {
 
-    private final EmployeeMapper mapper;
-    private final EmployeeJpaRepository repository;
-
 
     public EmployeeRepository(EmployeeJpaRepository repository, EmployeeMapper mapper, EntityManager entityManager) {
         super(repository, mapper, entityManager);
-        this.repository = repository;
-        this.mapper = mapper;
     }
 
 

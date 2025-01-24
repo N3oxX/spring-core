@@ -141,14 +141,7 @@ public class EmployeeControllerTest {
                 inputDto);
 
         Mockito.when(service.getAll()).thenReturn(employeeList);
-        Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
-            EmployeeDTO emp = invocation.getArgument(0);
-            return EmployeeDTOResponse.builder()
-                    .name(emp.getName())
-                    .email(emp.getEmail())
-                    .phone(emp.getPhone())
-                    .build();
-        });
+        mockMapperDtoToResponse();
 
         mockMvc.perform(get("/employees/all")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -246,14 +239,7 @@ public class EmployeeControllerTest {
         Page<EmployeeDTO> employeePage = new PageImpl<>(employees, PageRequest.of(0, 5, Sort.by("name")), employees.size());
 
         Mockito.when(service.getPaginated(any())).thenReturn(employeePage);
-        Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
-            EmployeeDTO emp = invocation.getArgument(0);
-            return EmployeeDTOResponse.builder()
-                    .name(emp.getName())
-                    .email(emp.getEmail())
-                    .phone(emp.getPhone())
-                    .build();
-        });
+        mockMapperDtoToResponse();
 
         mockMvc.perform(post("/employees/paginated")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -276,6 +262,17 @@ public class EmployeeControllerTest {
         String errorMessage = "Invalid field provided";
 
         Mockito.when(service.getPaginated(any())).thenThrow(new IllegalAccessException(errorMessage));
+        mockMapperDtoToResponse();
+
+        mockMvc.perform(post("/employees/paginated")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(paginatedDto)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(errorMessage))
+                .andExpect(jsonPath("$.details").value("Access to the field is not allowed."));
+    }
+
+    private void mockMapperDtoToResponse() {
         Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
             EmployeeDTO emp = invocation.getArgument(0);
             return EmployeeDTOResponse.builder()
@@ -284,12 +281,5 @@ public class EmployeeControllerTest {
                     .phone(emp.getPhone())
                     .build();
         });
-
-        mockMvc.perform(post("/employees/paginated")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(paginatedDto)))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").value(errorMessage))
-                .andExpect(jsonPath("$.details").value("Access to the field is not allowed."));
     }
 }

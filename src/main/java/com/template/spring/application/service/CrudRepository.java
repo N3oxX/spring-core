@@ -19,7 +19,7 @@ public interface CrudRepository<T, I> {
 
     void delete(I id);
 
-    T patch(I id, Map<String, Object> updates) throws UnknownEntityException, IllegalArgumentException, UnknownEntityException;
+    T patch(I id, Map<String, Object> updates) throws IllegalArgumentException, UnknownEntityException;
 
     Page<T> findPaginated(T searchFields, Pageable pageable) throws IllegalAccessException;
 
