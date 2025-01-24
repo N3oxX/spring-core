@@ -1,2 +1,2 @@
-# Spring mongo Template
-Repository with mongo connection
+# Spring Core Template
+Repository with postgresql connection, and default crud impl.

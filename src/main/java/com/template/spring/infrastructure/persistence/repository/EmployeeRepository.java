@@ -2,7 +2,7 @@ package com.template.spring.infrastructure.persistence.repository;
 
 
 import com.template.spring.application.mapper.EmployeeMapper;
-import com.template.spring.crud.CrudRepositoryImpl;
+import com.template.spring.application.service.CrudRepositoryImpl;
 import com.template.spring.domain.model.Employee;
 import com.template.spring.domain.repository.EmployeeRepositoryAdapter;
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;

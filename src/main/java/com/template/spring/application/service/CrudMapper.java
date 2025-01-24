@@ -1,4 +1,4 @@
-package com.template.spring.crud;
+package com.template.spring.application.service;
 
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

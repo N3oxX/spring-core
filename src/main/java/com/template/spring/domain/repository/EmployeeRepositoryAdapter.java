@@ -1,6 +1,6 @@
 package com.template.spring.domain.repository;
 
-import com.template.spring.crud.CrudRepository;
+import com.template.spring.application.service.CrudRepository;
 import com.template.spring.domain.model.Employee;
 
 

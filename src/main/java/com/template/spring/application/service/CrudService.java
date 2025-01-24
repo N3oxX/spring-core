@@ -1,4 +1,4 @@
-package com.template.spring.crud;
+package com.template.spring.application.service;
 
 import com.template.spring.application.exception.UnknownEntityException;
 import com.template.spring.web.dto.input.EmployeePaginatedDto;

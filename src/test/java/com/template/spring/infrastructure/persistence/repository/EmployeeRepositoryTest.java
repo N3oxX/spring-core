@@ -8,8 +8,10 @@ import com.template.spring.domain.model.Employee;
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +23,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.*;
+import java.util.stream.Stream;
 
+import static com.template.spring.utils.TestParametersProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -41,20 +45,14 @@ public class EmployeeRepositoryTest {
     @InjectMocks
     private EmployeeRepository employeeRepository;
 
-    private Employee employee;
-
-    private EmployeeDBO employeeDBO;
-
     @BeforeEach
     public void setUp() {
-        employee = Employee.builder().name("David").email("david@gmail.com").phone("12354353").build();
-        employeeDBO = new EmployeeDBO("David","david@gmail.com","12354353");
-
         employeeRepository = new EmployeeRepository(repository, mapper, entityManager);
     }
 
-    @Test
-    public void testSave() {
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testSave(Employee employee, EmployeeDBO employeeDBO) {
         when(mapper.EntityToDBO(employee)).thenReturn(employeeDBO);
         when(repository.save(employeeDBO)).thenReturn(employeeDBO);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
@@ -66,54 +64,59 @@ public class EmployeeRepositoryTest {
         verify(repository).save(employeeDBO);
     }
 
-    @Test
-    public void testGetById() throws UnknownEntityException {
-        when(repository.findById("1")).thenReturn(Optional.of(employeeDBO));
+   @ParameterizedTest
+   @MethodSource("provideTestCases")
+   public void testGetById(Employee employee, EmployeeDBO employeeDBO, String id) throws UnknownEntityException {
+        when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
 
-        Employee foundEmployee = employeeRepository.getById("1");
+        Employee foundEmployee = employeeRepository.getById(id);
 
         assertNotNull(foundEmployee);
         assertEquals(employee.getName(), foundEmployee.getName());
-        verify(repository).findById("1");
+        verify(repository).findById(id);
     }
 
-    @Test
-    public void testGetByIdThrowsUnknownEntityException() {
-        when(repository.findById("1")).thenReturn(Optional.empty());
+
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testGetByIdThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id){
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.getById("1");
+            employeeRepository.getById(id);
         });
     }
 
-    @Test
-    public void testUpdate() throws UnknownEntityException {
-        when(repository.findById("1")).thenReturn(Optional.of(employeeDBO));
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testUpdate(Employee employee, EmployeeDBO employeeDBO, String id) throws UnknownEntityException {
+        when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
         doNothing().when(mapper).updateDBOFromEntity(employee, employeeDBO);
         when(repository.save(employeeDBO)).thenReturn(employeeDBO);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
 
-        Employee updatedEmployee = employeeRepository.update("1", employee);
+        Employee updatedEmployee = employeeRepository.update(id, employee);
 
         assertNotNull(updatedEmployee);
         assertEquals(employee.getName(), updatedEmployee.getName());
-        verify(repository).findById("1");
+        verify(repository).findById(id);
         verify(repository).save(employeeDBO);
     }
-
-    @Test
-    public void testUpdateThrowsUnknownEntityException() {
-        when(repository.findById("1")).thenReturn(Optional.empty());
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testUpdateThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id) {
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.update("1", employee);
+            employeeRepository.update(id, employee);
         });
     }
 
 
-    @Test
-    public void testGetAll() {
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testGetAll(Employee employee, EmployeeDBO employeeDBO, String id) {
         List<EmployeeDBO> employeeDBOs = Arrays.asList(employeeDBO);
         when(repository.findAll()).thenReturn(employeeDBOs);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
@@ -125,113 +128,81 @@ public class EmployeeRepositoryTest {
         verify(repository).findAll();
     }
 
-    @Test
-    public void testDelete() {
-        doNothing().when(repository).deleteById("1");
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testDelete(Employee employee, EmployeeDBO employeeDBO, String id)  {
+        doNothing().when(repository).deleteById(id);
 
-        employeeRepository.delete("1");
+        employeeRepository.delete(id);
 
-        verify(repository).deleteById("1");
+        verify(repository).deleteById(id);
     }
 
-    @Test
-    public void testPatch() throws UnknownEntityException {
-        when(repository.findById("1")).thenReturn(Optional.of(employeeDBO));
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testPatch(Employee employee, EmployeeDBO employeeDBO, String id)  throws UnknownEntityException {
+        when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
         when(repository.save(employeeDBO)).thenReturn(employeeDBO);
         when(mapper.DBOToEntity(employeeDBO)).thenReturn(employee);
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("name", "John Doe Updated");
 
-        Employee patchedEmployee = employeeRepository.patch("1", updates);
+        Employee patchedEmployee = employeeRepository.patch(id, updates);
 
         assertNotNull(patchedEmployee);
-        assertEquals("David", patchedEmployee.getName());
-        verify(repository).findById("1");
+        verify(repository).findById(id);
         verify(repository).save(employeeDBO);
     }
 
-    @Test
-    public void testPatchThrowsUnknownEntityException() {
-        when(repository.findById("1")).thenReturn(Optional.empty());
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testPatchThrowsUnknownEntityException(Employee employee, EmployeeDBO employeeDBO, String id)  {
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("name", "John Doe Updated");
 
         assertThrows(UnknownEntityException.class, () -> {
-            employeeRepository.patch("1", updates);
+            employeeRepository.patch(id, updates);
         });
     }
 
-    @Test
-    public void testPatchThrowsIllegalArgumentException() throws UnknownEntityException {
-        when(repository.findById("1")).thenReturn(Optional.of(employeeDBO));
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testPatchThrowsIllegalArgumentException(Employee employee, EmployeeDBO employeeDBO, String id) {
+        when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
 
         Map<String, Object> updates = new HashMap<>();
-        updates.put("id", "newId"); // Trying to update the 'id' field should throw IllegalArgumentException
+        updates.put("id", "newId");
 
         assertThrows(IllegalArgumentException.class, () -> {
-            employeeRepository.patch("1", updates);
+            employeeRepository.patch(id, updates);
         });
     }
 
-    @Test
-    public void testPatchThrowsIllegalArgumentExceptionOnFieldSetFailure() throws UnknownEntityException {
-        // Arrange
-        String id = "1";
+    @ParameterizedTest
+    @MethodSource("provideTestCases")
+    public void testPatchThrowsIllegalArgumentExceptionOnFieldSetFailure(Employee employee, EmployeeDBO employeeDBO, String id) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("nonExistentField", "newValue");
 
         when(repository.findById(id)).thenReturn(Optional.of(employeeDBO));
 
-        // Act and Assert
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             employeeRepository.patch(id, updates);
         });
 
         assertTrue(exception.getMessage().contains("Failed to set field: nonExistentField"));
 
-        // Verify
         verify(repository).findById(id);
         verifyNoMoreInteractions(repository);
     }
 
-    @Test
-    public void testFindPaginated_withNullSearchFields() throws IllegalAccessException {
-        // Arrange: Mock dependencies
-        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
-        CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
-        Root<EmployeeDBO> root = mock(Root.class);
-        TypedQuery<EmployeeDBO> typedQuery = mock(TypedQuery.class);
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        TypedQuery<Long> countTypedQuery = mock(TypedQuery.class);
 
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-        when(criteriaBuilder.createQuery(EmployeeDBO.class)).thenReturn(criteriaQuery);
-        when(criteriaQuery.from(EmployeeDBO.class)).thenReturn(root);
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Collections.singletonList(employeeDBO));
-
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.select(criteriaBuilder.count(countQuery.from(EmployeeDBO.class)))).thenReturn(countQuery);
-        when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
-        when(countTypedQuery.getSingleResult()).thenReturn(1L);
-
-        Pageable pageable = PageRequest.of(0, 10);
-
-        // Act
-        Page<Employee> result = employeeRepository.findPaginated(null, pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
-    }
-
-    @Test
-    public void testFindPaginated_withNullFieldsInSearchFields() throws IllegalAccessException {
-        // Arrange: Setup search fields with null values
-        Employee searchFields = Employee.builder().name(null).email(null).phone(null).build();
+    @ParameterizedTest
+    @MethodSource("provideFindPaginatedTestCases")
+    public void testFindPaginated(Employee searchFields, Pageable pageable, EmployeeDBO employeeDBO) throws IllegalAccessException {
 
         CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
         CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
@@ -251,153 +222,40 @@ public class EmployeeRepositoryTest {
         when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
         when(countTypedQuery.getSingleResult()).thenReturn(1L);
 
-        Pageable pageable = PageRequest.of(0, 10);
-
-        // Act
         Page<Employee> result = employeeRepository.findPaginated(searchFields, pageable);
 
-        // Assert
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(1, result.getContent().size());
     }
 
-    @Test
-    public void testFindPaginated_withNonNullFieldsInSearchFields() throws IllegalAccessException {
-        // Arrange: Setup search fields with non-null values
-        Employee searchFields = Employee.builder().name("David").email("david@gmail.com").phone("12354353").build();
+    public static Stream<Arguments> provideTestCases() {
 
-        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
-        CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
-        Root<EmployeeDBO> root = mock(Root.class);
-        TypedQuery<EmployeeDBO> typedQuery = mock(TypedQuery.class);
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        TypedQuery<Long> countTypedQuery = mock(TypedQuery.class);
-
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-        when(criteriaBuilder.createQuery(EmployeeDBO.class)).thenReturn(criteriaQuery);
-        when(criteriaQuery.from(EmployeeDBO.class)).thenReturn(root);
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Collections.singletonList(employeeDBO));
-
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.select(criteriaBuilder.count(countQuery.from(EmployeeDBO.class)))).thenReturn(countQuery);
-        when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
-        when(countTypedQuery.getSingleResult()).thenReturn(1L);
-
-        Pageable pageable = PageRequest.of(0, 10);
-
-        // Act
-        Page<Employee> result = employeeRepository.findPaginated(searchFields, pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
+        return Stream.of(
+                Arguments.of(EMPLOYEE1 ,EMPLOYEE_DBO1, "41fbfe88-ea44-4606-a565-858c6e3b2e9c"),
+                Arguments.of(EMPLOYEE2 ,EMPLOYEE_DBO2, "92124e84-sa14-4n34-a452-858346457457")
+        );
     }
 
-    @Test
-    public void testFindPaginated_withNullSort() throws IllegalAccessException {
-        // Arrange
-        Employee searchFields = Employee.builder().name("David").email("david@gmail.com").phone("12354353").build();
+    public static Stream<Arguments> provideFindPaginatedTestCases() {
 
-        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
-        CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
-        Root<EmployeeDBO> root = mock(Root.class);
-        TypedQuery<EmployeeDBO> typedQuery = mock(TypedQuery.class);
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        TypedQuery<Long> countTypedQuery = mock(TypedQuery.class);
+        Pageable pageable10 = PageRequest.of(0, 10);
+        Pageable pageableUnsorted = PageRequest.of(0, 10, Sort.unsorted());
+        Pageable pageableAsc = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
+        Pageable pageableDes = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("name")));
 
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-        when(criteriaBuilder.createQuery(EmployeeDBO.class)).thenReturn(criteriaQuery);
-        when(criteriaQuery.from(EmployeeDBO.class)).thenReturn(root);
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Collections.singletonList(employeeDBO));
-
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.select(criteriaBuilder.count(countQuery.from(EmployeeDBO.class)))).thenReturn(countQuery);
-        when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
-        when(countTypedQuery.getSingleResult()).thenReturn(1L);
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.unsorted());
-
-        // Act
-        Page<Employee> result = employeeRepository.findPaginated(searchFields, pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
+        return Stream.of(
+                Arguments.of(EMPLOYEE1, pageable10, null ,EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableUnsorted, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableAsc, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE1, pageableDes, EMPLOYEE_DBO1),
+                Arguments.of(EMPLOYEE2, pageable10, null ,EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE_NULL, pageable10, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableUnsorted, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableAsc, EMPLOYEE_DBO2),
+                Arguments.of(EMPLOYEE2, pageableDes, EMPLOYEE_DBO2),
+                Arguments.of(null, pageableDes, EMPLOYEE_DBO2)
+        );
     }
-
-    @Test
-    public void testFindPaginated_withNonNullSort() throws IllegalAccessException {
-        // Arrange
-        Employee searchFields = Employee.builder().id("idtest").name("David").email("david@gmail.com").phone("12354353").build();
-
-        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
-        CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
-        Root<EmployeeDBO> root = mock(Root.class);
-        TypedQuery<EmployeeDBO> typedQuery = mock(TypedQuery.class);
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        TypedQuery<Long> countTypedQuery = mock(TypedQuery.class);
-
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-        when(criteriaBuilder.createQuery(EmployeeDBO.class)).thenReturn(criteriaQuery);
-        when(criteriaQuery.from(EmployeeDBO.class)).thenReturn(root);
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Collections.singletonList(employeeDBO));
-
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.select(criteriaBuilder.count(countQuery.from(EmployeeDBO.class)))).thenReturn(countQuery);
-        when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
-        when(countTypedQuery.getSingleResult()).thenReturn(1L);
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("name")));
-
-        // Act
-        Page<Employee> result = employeeRepository.findPaginated(searchFields, pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
-    }
-    @Test
-    public void testFindPaginated_withDescendingOrderSorting() throws IllegalAccessException {
-        // Arrange: Setup search fields
-        Employee searchFields = Employee.builder().name("David").email("david@gmail.com").phone("12354353").build();
-
-        CriteriaBuilder criteriaBuilder = mock(CriteriaBuilder.class);
-        CriteriaQuery<EmployeeDBO> criteriaQuery = mock(CriteriaQuery.class);
-        Root<EmployeeDBO> root = mock(Root.class);
-        TypedQuery<EmployeeDBO> typedQuery = mock(TypedQuery.class);
-        CriteriaQuery<Long> countQuery = mock(CriteriaQuery.class);
-        TypedQuery<Long> countTypedQuery = mock(TypedQuery.class);
-
-        when(entityManager.getCriteriaBuilder()).thenReturn(criteriaBuilder);
-        when(criteriaBuilder.createQuery(EmployeeDBO.class)).thenReturn(criteriaQuery);
-        when(criteriaQuery.from(EmployeeDBO.class)).thenReturn(root);
-        when(entityManager.createQuery(criteriaQuery)).thenReturn(typedQuery);
-        when(typedQuery.getResultList()).thenReturn(Collections.singletonList(employeeDBO));
-
-        when(criteriaBuilder.createQuery(Long.class)).thenReturn(countQuery);
-        when(countQuery.select(criteriaBuilder.count(countQuery.from(EmployeeDBO.class)))).thenReturn(countQuery);
-        when(entityManager.createQuery(countQuery)).thenReturn(countTypedQuery);
-        when(countTypedQuery.getSingleResult()).thenReturn(1L);
-
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("name")));
-
-        // Act
-        Page<Employee> result = employeeRepository.findPaginated(searchFields, pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(1, result.getContent().size());
-    }
-
-
-
-
 }

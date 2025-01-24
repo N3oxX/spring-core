@@ -2,7 +2,6 @@ package com.template.spring.application.service;
 
 import com.template.spring.application.mapper.EmployeeMapper;
 import com.template.spring.application.usecase.ManagementUseCase;
-import com.template.spring.crud.CrudServiceImpl;
 import com.template.spring.domain.model.Employee;
 import com.template.spring.domain.repository.EmployeeRepositoryAdapter;
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;

@@ -3,8 +3,8 @@ POST http://localhost:8080/accounts
 Content-Type: application/json
 
 {
-  "number": "1",
-  "customerId": "1",
+  "number": id,
+  "customerId": id,
   "balance": 10000
 }
 
@@ -55,8 +55,8 @@ PUT http://localhost:8080/accounts/670798e5f498926784fe82e3
 Content-Type: application/json
 
 {
-  "number": "1",
-  "customerId": "1",
+  "number": id,
+  "customerId": id,
   "balance": "1424211"
 }
 

@@ -1,7 +1,7 @@
 package com.template.spring.application.mapper;
 
 
-import com.template.spring.crud.CrudMapper;
+import com.template.spring.application.service.CrudMapper;
 import com.template.spring.domain.model.Employee;
 import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
 import com.template.spring.web.dto.input.EmployeeDTO;

@@ -5,10 +5,14 @@ import com.template.spring.application.exception.UnknownEntityException;
 import com.template.spring.application.mapper.EmployeeMapper;
 import com.template.spring.application.service.EmployeeService;
 import com.template.spring.domain.model.Employee;
+import com.template.spring.utils.TestParametersProvider;
 import com.template.spring.web.dto.input.EmployeeDTO;
 import com.template.spring.web.dto.input.EmployeePaginatedDto;
 import com.template.spring.web.dto.output.EmployeeDTOResponse;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,9 +24,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static com.template.spring.utils.TestParametersProvider.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,58 +51,57 @@ public class EmployeeControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    public void testCreateEmployee() throws Exception {
-        // Prepare mock data
-        EmployeeDTO inputDto = new EmployeeDTO(UUID.randomUUID().toString(), "David", "david@gmail.com", "12354353");
-        EmployeeDTOResponse responseDto =  EmployeeDTOResponse.builder().name("David").email("david@gmail.com").phone("12354353").build();
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testCreateEmployee(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
 
-        // Mock behavior
         Mockito.when(service.create(any(EmployeeDTO.class))).thenReturn(inputDto);
         Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
 
-        // Perform POST request
+
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("David"))
-                .andExpect(jsonPath("$.email").value("david@gmail.com"))
-                .andExpect(jsonPath("$.phone").value("12354353"));
+                .andExpect(jsonPath("$.name").value(responseDto.getName()))
+                .andExpect(jsonPath("$.email").value(responseDto.getEmail()))
+                .andExpect(jsonPath("$.phone").value(responseDto.getPhone()));
     }
 
-    @Test
-    public void testCreateEmployeeWithInvalidEmail() throws Exception {
-        // Prepare mock data with invalid email format
-        EmployeeDTO invalidEmailDto = new EmployeeDTO(UUID.randomUUID().toString(), "David", "invalid-email", "12354353");
-
-        // Perform POST request with invalid email
+    @ParameterizedTest
+    @MethodSource("provideInvalidEmailData")
+    public void testCreateEmployeeWithInvalidEmail(EmployeeDTO invEmployeeDTO) throws Exception {
         mockMvc.perform(post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidEmailDto)))
+                .content(objectMapper.writeValueAsString(invEmployeeDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation error"))
                 .andExpect(jsonPath("$.fieldErrors[0].field").value("email"))
                 .andExpect(jsonPath("$.fieldErrors[0].message").value("Email should be valid"));
     }
 
-    @Test
-    public void testFindAllEmployees() throws Exception {
-        // Prepare mock data
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testUpdateEmployee(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
+
+        Mockito.when(service.update(eq(id), any(EmployeeDTO.class))).thenReturn(inputDto);
+        Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
+
+        mockMvc.perform(put("/employees/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(responseDto.getName()))
+                .andExpect(jsonPath("$.email").value(responseDto.getEmail()))
+                .andExpect(jsonPath("$.phone").value(responseDto.getPhone()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testFindAllEmployees(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
         List<EmployeeDTO> employeeList = List.of(
-                new EmployeeDTO(UUID.randomUUID().toString(), "David", "david@gmail.com", "12354353"),
-                new EmployeeDTO(UUID.randomUUID().toString(), "John", "john@gmail.com", "98765432")
-        );
+                inputDto);
 
-        List<EmployeeDTOResponse> responseList = employeeList.stream()
-                .map(emp -> EmployeeDTOResponse.builder()
-                        .name(emp.getName())
-                        .email(emp.getEmail())
-                        .phone(emp.getPhone())
-                        .build())
-                .collect(Collectors.toList());
-
-        // Mock service and mapper behavior
         Mockito.when(service.getAll()).thenReturn(employeeList);
         Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
             EmployeeDTO emp = invocation.getArgument(0);
@@ -105,40 +112,32 @@ public class EmployeeControllerTest {
                     .build();
         });
 
-        // Perform GET request
         mockMvc.perform(get("/employees/all")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("David"))
-                .andExpect(jsonPath("$[0].email").value("david@gmail.com"))
-                .andExpect(jsonPath("$[0].phone").value("12354353"))
-                .andExpect(jsonPath("$[1].name").value("John"))
-                .andExpect(jsonPath("$[1].email").value("john@gmail.com"))
-                .andExpect(jsonPath("$[1].phone").value("98765432"));
+                .andExpect(jsonPath("$[0].name").value(inputDto.getName()))
+                .andExpect(jsonPath("$[0].email").value(inputDto.getEmail()))
+                .andExpect(jsonPath("$[0].phone").value(inputDto.getPhone()));
     }
 
-    @Test
-    public void testGetEmployeeById() throws Exception {
-        String id = UUID.randomUUID().toString();
-        EmployeeDTO inputDto = new EmployeeDTO(id, "David", "david@gmail.com", "12354353");
-        EmployeeDTOResponse responseDto = EmployeeDTOResponse.builder()
-                .name("David")
-                .email("david@gmail.com")
-                .phone("12354353")
-                .build();
 
-        Mockito.when(service.getById(eq(id))).thenReturn(inputDto);
-        Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testGetEmployeeById(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+
+        Mockito.when(service.getById(eq(id))).thenReturn(dto);
+        Mockito.when(mapper.DTOToResponse(dto)).thenReturn(responseDto);
 
         mockMvc.perform(get("/employees/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("David"))
-                .andExpect(jsonPath("$.email").value("david@gmail.com"))
-                .andExpect(jsonPath("$.phone").value("12354353"));
+                .andExpect(jsonPath("$.name").value(dto.getName()))
+                .andExpect(jsonPath("$.email").value(dto.getEmail()))
+                .andExpect(jsonPath("$.phone").value(dto.getPhone()));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
     public void testGetEmployeeById_NotFound() throws Exception {
         String id = UUID.randomUUID().toString();
         String errorMessage = "Employee not found";
@@ -152,32 +151,11 @@ public class EmployeeControllerTest {
                 .andExpect(jsonPath("$.details").value("The requested employee could not be found."));
     }
 
-    @Test
-    public void testUpdateEmployee() throws Exception {
-        String id = UUID.randomUUID().toString();
-        EmployeeDTO inputDto = new EmployeeDTO(id, "David Updated", "david.updated@gmail.com", "98765432");
-        EmployeeDTOResponse responseDto = EmployeeDTOResponse.builder()
-                .name("David Updated")
-                .email("david.updated@gmail.com")
-                .phone("98765432")
-                .build();
 
-        Mockito.when(service.update(eq(id), any(EmployeeDTO.class))).thenReturn(inputDto);
-        Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
 
-        mockMvc.perform(put("/employees/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(inputDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("David Updated"))
-                .andExpect(jsonPath("$.email").value("david.updated@gmail.com"))
-                .andExpect(jsonPath("$.phone").value("98765432"));
-    }
-
-    @Test
-    public void testUpdateEmployee_InvalidField() throws Exception {
-        String id = UUID.randomUUID().toString();
-        EmployeeDTO inputDto = new EmployeeDTO(id, "David Updated", "david.updated@gmail.com", "98765432");
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testUpdateEmployee_InvalidField(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
         String errorMessage = "Invalid field provided";
 
         // Mock behavior to throw IllegalArgumentException
@@ -186,11 +164,12 @@ public class EmployeeControllerTest {
         // Perform PUT request and expect IllegalArgumentException
         mockMvc.perform(put("/employees/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(inputDto)))
+                .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(errorMessage))
                 .andExpect(jsonPath("$.details").value("The field don't exist."));
     }
+
 
     @Test
     public void testDeleteEmployee() throws Exception {
@@ -203,16 +182,11 @@ public class EmployeeControllerTest {
         Mockito.verify(service, Mockito.times(1)).delete(eq(id));
     }
 
-    @Test
-    public void testPatchEmployee() throws Exception {
-        String id = UUID.randomUUID().toString();
-        Map<String, Object> updates = Map.of("name", "David Patched");
-        EmployeeDTO updatedDto = new EmployeeDTO(id, "David Patched", "david@gmail.com", "12354353");
-        EmployeeDTOResponse responseDto = EmployeeDTOResponse.builder()
-                .name("David Patched")
-                .email("david@gmail.com")
-                .phone("12354353")
-                .build();
+    @ParameterizedTest
+    @MethodSource("provideEmployeeDataPatch")
+    public void testPatchEmployee(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+        Map<String, Object> updates = Map.of("name", dto.getName() + " patched");
+        EmployeeDTO updatedDto = new EmployeeDTO(id, dto.getName() + " patched", "david@gmail.com", "12354353");
 
         Mockito.when(service.patch(eq(id), any(Map.class))).thenReturn(updatedDto);
         Mockito.when(mapper.DTOToResponse(updatedDto)).thenReturn(responseDto);
@@ -221,31 +195,22 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updates)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("David Patched"))
-                .andExpect(jsonPath("$.email").value("david@gmail.com"))
-                .andExpect(jsonPath("$.phone").value("12354353"));
+                .andExpect(jsonPath("$.name").value(updatedDto.getName()));
     }
 
-    @Test
-    public void testGetPaginatedEmployees() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testGetPaginatedEmployees(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
         EmployeeDTO searchFields = new EmployeeDTO(null, "David", null, null);
         EmployeePaginatedDto<EmployeeDTO> paginatedDto = new EmployeePaginatedDto<>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
         paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "ASC"));
         paginatedDto.setSearchFields(searchFields);
-
         List<EmployeeDTO> employees = List.of(
-                new EmployeeDTO(UUID.randomUUID().toString(), "David", "david@gmail.com", "12354353"),
-                new EmployeeDTO(UUID.randomUUID().toString(), "John", "john@gmail.com", "45678901")
+               dto
         );
-
         Page<EmployeeDTO> employeePage = new PageImpl<>(employees, PageRequest.of(0, 5, Sort.by("name")), employees.size());
-        Page<EmployeeDTOResponse> responsePage = employeePage.map(emp -> EmployeeDTOResponse.builder()
-                .name(emp.getName())
-                .email(emp.getEmail())
-                .phone(emp.getPhone())
-                .build());
 
         Mockito.when(service.getPaginated(any(EmployeePaginatedDto.class))).thenReturn(employeePage);
         Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
@@ -261,28 +226,20 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(paginatedDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].name").value("David"))
-                .andExpect(jsonPath("$.content[0].email").value("david@gmail.com"))
-                .andExpect(jsonPath("$.content[1].name").value("John"))
-                .andExpect(jsonPath("$.content[1].email").value("john@gmail.com"));
+                .andExpect(jsonPath("$.content[0].name").value(dto.getName()))
+                .andExpect(jsonPath("$.content[0].email").value(dto.getEmail()));
     }
 
 
-    @Test
-    public void testGetPaginatedEmployees_AccesException() throws Exception {
-        EmployeeDTO searchFields = new EmployeeDTO(null, "David", null, null);
+    @ParameterizedTest
+    @MethodSource("provideEmployeeData")
+    public void testGetPaginatedEmployees_AccessException(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+
         EmployeePaginatedDto<EmployeeDTO> paginatedDto = new EmployeePaginatedDto<>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
         paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "ASC"));
-        paginatedDto.setSearchFields(searchFields);
-
-        List<EmployeeDTO> employees = List.of(
-                new EmployeeDTO(UUID.randomUUID().toString(), "David", "david@gmail.com", "12354353"),
-                new EmployeeDTO(UUID.randomUUID().toString(), "John", "john@gmail.com", "45678901")
-        );
-
-        Page<EmployeeDTO> employeePage = new PageImpl<>(employees, PageRequest.of(0, 5, Sort.by("name")), employees.size());
+        paginatedDto.setSearchFields(dto);
 
         String errorMessage = "Invalid field provided";
 
@@ -296,7 +253,6 @@ public class EmployeeControllerTest {
                     .build();
         });
 
-
         mockMvc.perform(post("/employees/paginated")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(paginatedDto)))
@@ -306,4 +262,45 @@ public class EmployeeControllerTest {
     }
 
 
+    private static Stream<Arguments> provideInvalidEmailData() {
+        return Stream.of(
+                Arguments.of(
+                        EMPLOYEE_EMAIL_WRONG1
+                ),
+                Arguments.of(
+                        EMPLOYEE_EMAIL_WRONG2
+                )
+        );
+    }
+
+    private static Stream<Arguments> provideEmployeeData() {
+        return Stream.of(
+                Arguments.of(
+                        "92124e84-sa14-4n34-a452-858346457457",
+                        EMPLOYEE_DTO1,
+                        EMPLOYEE_RESPONSE_DTO1
+                ),
+                Arguments.of(
+                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
+                        EMPLOYEE_DTO2,
+                        EMPLOYEE_RESPONSE_DTO2
+                )
+        );
+    }
+
+    private static Stream<Arguments> provideEmployeeDataPatch() {
+        return Stream.of(
+                Arguments.of(
+                        "92124e84-sa14-4n34-a452-858346457457",
+                        EMPLOYEE_DTO1,
+                        EMPLOYEE_RESPONSE_DTO_PATCH1
+
+                ),
+                Arguments.of(
+                        "41fbfe88-ea44-4606-a565-858c6e3b2e9c",
+                        EMPLOYEE_DTO2,
+                        EMPLOYEE_RESPONSE_DTO_PATCH2
+                )
+        );
+    }
 }
