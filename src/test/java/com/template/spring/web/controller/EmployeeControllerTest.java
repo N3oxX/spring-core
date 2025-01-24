@@ -28,8 +28,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.template.spring.utils.TestParametersProvider.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -222,7 +221,7 @@ public class EmployeeControllerTest {
         Map<String, Object> updates = Map.of("name", dto.getName() + " patched");
         EmployeeDTO updatedDto = new EmployeeDTO(id, dto.getName() + " patched", "david@gmail.com", "12354353");
 
-        Mockito.when(service.patch(eq(id), any(Map.class))).thenReturn(updatedDto);
+        Mockito.when(service.patch(eq(id), anyMap())).thenReturn(updatedDto);
         Mockito.when(mapper.DTOToResponse(updatedDto)).thenReturn(responseDto);
 
         mockMvc.perform(patch("/employees/{id}", id)
@@ -246,7 +245,7 @@ public class EmployeeControllerTest {
         );
         Page<EmployeeDTO> employeePage = new PageImpl<>(employees, PageRequest.of(0, 5, Sort.by("name")), employees.size());
 
-        Mockito.when(service.getPaginated(any(EmployeePaginatedDto.class))).thenReturn(employeePage);
+        Mockito.when(service.getPaginated(any())).thenReturn(employeePage);
         Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
             EmployeeDTO emp = invocation.getArgument(0);
             return EmployeeDTOResponse.builder()
@@ -276,7 +275,7 @@ public class EmployeeControllerTest {
 
         String errorMessage = "Invalid field provided";
 
-        Mockito.when(service.getPaginated(any(EmployeePaginatedDto.class))).thenThrow(new IllegalAccessException(errorMessage));
+        Mockito.when(service.getPaginated(any())).thenThrow(new IllegalAccessException(errorMessage));
         Mockito.when(mapper.DTOToResponse(any(EmployeeDTO.class))).thenAnswer(invocation -> {
             EmployeeDTO emp = invocation.getArgument(0);
             return EmployeeDTOResponse.builder()
