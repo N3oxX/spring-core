@@ -9,12 +9,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Getter
-@Setter
+
 @SuperBuilder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class EmployeeDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

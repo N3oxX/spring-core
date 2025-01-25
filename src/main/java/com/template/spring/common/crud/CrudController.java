@@ -1,7 +1,7 @@
 package com.template.spring.common.crud;
 
 import com.template.spring.core.application.exception.UnknownEntityException;
-import com.template.spring.core.web.dto.input.PaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -117,7 +117,7 @@ public abstract class CrudController<T, I, D, B, R> {
             @ApiResponse(responseCode = "400", description = "Invalid pagination request")
     })
     @PostMapping("/paginated")
-    public Page<R> getPaginated(@RequestBody PaginatedDto<D> paginatedDto) throws IllegalAccessException {
+    public Page<R> getPaginated(@RequestBody PaginatedDTO<D> paginatedDto) throws IllegalAccessException {
         return service.getPaginated(paginatedDto).map(mapper::DTOToResponse);
     }
 

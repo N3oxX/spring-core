@@ -1,19 +1,21 @@
 package com.template.spring.core.domain.model;
 
 import com.template.spring.common.util.Sensitive;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-@Getter
-@ToString
+@Value
 public class Employee extends BaseEntity {
 
-    private final String name;
+    String name;
 
     @Sensitive
-    private final String email;
+    String email;
     @Sensitive
-    private final String phone;
+    String phone;
 }

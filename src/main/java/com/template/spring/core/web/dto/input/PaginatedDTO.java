@@ -1,15 +1,11 @@
 package com.template.spring.core.web.dto.input;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.jackson.Jacksonized;
+import lombok.*;
 
 
 @Getter
 @Setter
-@Jacksonized
-public class PaginatedDto<D> {
+public class PaginatedDTO<D> {
 
     private int pageSize;
 
@@ -19,10 +15,8 @@ public class PaginatedDto<D> {
 
     private D searchFields;
 
-
     @Getter
     @Setter
-    @Jacksonized
     @AllArgsConstructor
     public static class Order {
 
@@ -30,5 +24,4 @@ public class PaginatedDto<D> {
 
         private String orderType;
     }
-
 }

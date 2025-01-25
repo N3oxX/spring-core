@@ -5,7 +5,7 @@ import com.template.spring.core.application.exception.UnknownEntityException;
 import com.template.spring.core.application.mapper.EmployeeMapper;
 import com.template.spring.core.application.service.EmployeeService;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
-import com.template.spring.core.web.dto.input.PaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -228,10 +228,10 @@ public class EmployeeControllerTest {
     @MethodSource("provideEmployeeData")
     public void testGetPaginatedEmployees(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
         EmployeeDTO searchFields = new EmployeeDTO(null, "David", null, null);
-        PaginatedDto<EmployeeDTO> paginatedDto = new PaginatedDto<>();
+        var paginatedDto = new PaginatedDTO<EmployeeDTO>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
-        paginatedDto.setOrder(new PaginatedDto.Order("name", "ASC"));
+        paginatedDto.setOrder(new PaginatedDTO.Order("name", "ASC"));
         paginatedDto.setSearchFields(searchFields);
         List<EmployeeDTO> employees = List.of(
                 dto
@@ -253,10 +253,10 @@ public class EmployeeControllerTest {
     @MethodSource("provideEmployeeData")
     public void testGetPaginatedEmployees_AccessException(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
 
-        PaginatedDto<EmployeeDTO> paginatedDto = new PaginatedDto<>();
+        PaginatedDTO<EmployeeDTO> paginatedDto = new PaginatedDTO<>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
-        paginatedDto.setOrder(new PaginatedDto.Order("name", "ASC"));
+        paginatedDto.setOrder(new PaginatedDTO.Order("name", "ASC"));
         paginatedDto.setSearchFields(dto);
 
         String errorMessage = "Invalid field provided";
