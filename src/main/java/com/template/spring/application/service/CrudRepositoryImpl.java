@@ -112,7 +112,7 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
                 field.setAccessible(true);
                 Object value = field.get(searchFields);
                 if (value != null) {
-                    predicates.add(cb.equal(root.get(field.getName()), value));
+                    predicates.add(cb.like(root.get(field.getName()), "%" + value + "%"));
                 }
             }
         }
@@ -121,7 +121,6 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
             criteriaQuery.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
-        // Apply sorting from Pageable
         pageable.getSort();
         List<Order> orders = new ArrayList<>();
         pageable.getSort().forEach(order -> {
@@ -133,15 +132,12 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
         });
         criteriaQuery.orderBy(orders);
 
-        // Apply pagination
         TypedQuery<B> query = entityManager.createQuery(criteriaQuery);
         query.setFirstResult((int) pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
 
-        // Fetch the results
         List<B> resultList = query.getResultList();
 
-        // Count total records for pagination
         CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
         countQuery.select(cb.count(countQuery.from(entityClass)));
         if (!predicates.isEmpty()) {
@@ -149,7 +145,6 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
         }
         long count = entityManager.createQuery(countQuery).getSingleResult();
 
-        // Map the results and return the Page
         List<T> items = resultList.stream()
                 .map(mapper::DBOToEntity)
                 .collect(Collectors.toList());
