@@ -96,11 +96,9 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
     @Override
     @SuppressWarnings("unchecked")
     public Page<T> findPaginated(T searchFields, Pageable pageable) throws IllegalAccessException {
-        // Get the class type of the entity
         Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[3];
         Class<B> entityClass = (Class<B>) type;
 
-        // Build the query dynamically
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<B> criteriaQuery = cb.createQuery(entityClass);
         Root<B> root = criteriaQuery.from(entityClass);

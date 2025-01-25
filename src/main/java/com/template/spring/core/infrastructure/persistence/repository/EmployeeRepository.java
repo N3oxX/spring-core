@@ -1,8 +1,8 @@
 package com.template.spring.core.infrastructure.persistence.repository;
 
 
-import com.template.spring.core.application.mapper.EmployeeMapper;
 import com.template.spring.common.crud.CrudRepositoryImpl;
+import com.template.spring.core.application.mapper.EmployeeMapper;
 import com.template.spring.core.domain.model.Employee;
 import com.template.spring.core.domain.repository.EmployeeRepositoryAdapter;
 import com.template.spring.core.web.dto.input.EmployeeDTO;

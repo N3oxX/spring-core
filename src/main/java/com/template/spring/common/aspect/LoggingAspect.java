@@ -14,50 +14,55 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-  @Autowired
-  public LoggingAspect(ObjectMapper objectMapper) {
-    objectMapper.registerModule(new JavaTimeModule());
-  }
-
-  @Pointcut("execution(* com.template.spring.core.application..*(..))")
-  public void applicationPackagePointcut() {}
-
-
-  @Pointcut("execution(* com.template.spring.core.domain..*(..))")
-  public void domainPackagePointcut() {}
-
-  @Pointcut("execution(* com.template.spring.core.infrastructure..*(..))")
-  public void infrastructurePackagePointcut() {}
-
-  @Pointcut("execution(* com.template.spring.core.web..*(..))")
-  public void primaryAdaptersPackagePointcut() {}
-
-  @Pointcut("execution(* com.template.spring.common.crud..*(..))")
-  public void crudPackagePointcut() {}
-
-  @Before("crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()")
-  public void logBeforeMethod(JoinPoint joinPoint) {
-    if (notExcluded(joinPoint)) {
-      log.info("Entering method: {}", joinPoint.getSignature().toShortString());
+    @Autowired
+    public LoggingAspect(ObjectMapper objectMapper) {
+        objectMapper.registerModule(new JavaTimeModule());
     }
-  }
 
-  @AfterReturning(pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()", returning = "result")
-  public void logAfterMethod(JoinPoint joinPoint, Object result) {
-    if (notExcluded(joinPoint)) {
-      String maskedResultString = LoggingUtil.maskSensitiveData(result);
-      log.info("Method {} executed with result: {}", joinPoint.getSignature().toShortString(), maskedResultString);
+    @Pointcut("execution(* com.template.spring.core.application..*(..))")
+    public void applicationPackagePointcut() {
     }
-  }
 
-  @AfterThrowing(pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()", throwing = "ex")
-  public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
-    if (notExcluded(joinPoint)) {
-      log.error("Exception in method: {}", joinPoint.getSignature().toShortString(), ex);
+
+    @Pointcut("execution(* com.template.spring.core.domain..*(..))")
+    public void domainPackagePointcut() {
     }
-  }
 
-  private boolean notExcluded(JoinPoint joinPoint) {
-    return !joinPoint.getSignature().getDeclaringTypeName().contains("MapperImpl");
-  }
+    @Pointcut("execution(* com.template.spring.core.infrastructure..*(..))")
+    public void infrastructurePackagePointcut() {
+    }
+
+    @Pointcut("execution(* com.template.spring.core.web..*(..))")
+    public void primaryAdaptersPackagePointcut() {
+    }
+
+    @Pointcut("execution(* com.template.spring.common.crud..*(..))")
+    public void crudPackagePointcut() {
+    }
+
+    @Before("crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()")
+    public void logBeforeMethod(JoinPoint joinPoint) {
+        if (notExcluded(joinPoint)) {
+            log.info("Entering method: {}", joinPoint.getSignature().toShortString());
+        }
+    }
+
+    @AfterReturning(pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()", returning = "result")
+    public void logAfterMethod(JoinPoint joinPoint, Object result) {
+        if (notExcluded(joinPoint)) {
+            String maskedResultString = LoggingUtil.maskSensitiveData(result);
+            log.info("Method {} executed with result: {}", joinPoint.getSignature().toShortString(), maskedResultString);
+        }
+    }
+
+    @AfterThrowing(pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()", throwing = "ex")
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
+        if (notExcluded(joinPoint)) {
+            log.error("Exception in method: {}", joinPoint.getSignature().toShortString(), ex);
+        }
+    }
+
+    private boolean notExcluded(JoinPoint joinPoint) {
+        return !joinPoint.getSignature().getDeclaringTypeName().contains("MapperImpl");
+    }
 }
