@@ -1,6 +1,7 @@
 package com.template.spring.web.dto.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.template.spring.util.Sensitive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class EmployeeDTO {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -22,9 +24,11 @@ public class EmployeeDTO {
     @NotNull
     private String name;
 
+    @Sensitive
     @Email(message = "Email should be valid")
     private String email;
 
+    @Sensitive
     private String phone;
 
 

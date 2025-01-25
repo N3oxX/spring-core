@@ -2,10 +2,8 @@ package com.template.spring.infrastructure.persistence.dbo;
 
 
 import com.template.spring.domain.model.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.template.spring.util.Sensitive;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -17,11 +15,14 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class EmployeeDBO extends BaseEntity {
 
     private String name;
 
+    @Sensitive
     private String email;
 
+    @Sensitive
     private String phone;
 }
