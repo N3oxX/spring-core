@@ -1,9 +1,9 @@
 package com.template.spring.utils;
 
-import com.template.spring.domain.model.Employee;
-import com.template.spring.infrastructure.persistence.dbo.EmployeeDBO;
-import com.template.spring.web.dto.input.EmployeeDTO;
-import com.template.spring.web.dto.output.EmployeeDTOResponse;
+import com.template.spring.core.domain.model.Employee;
+import com.template.spring.core.infrastructure.persistence.repository.EmployeeDBO;
+import com.template.spring.core.web.dto.input.EmployeeDTO;
+import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 
 public class TestParametersProvider {
 
