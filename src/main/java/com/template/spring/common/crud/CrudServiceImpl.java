@@ -2,7 +2,7 @@ package com.template.spring.common.crud;
 
 
 import com.template.spring.core.application.exception.UnknownEntityException;
-import com.template.spring.core.web.dto.input.EmployeePaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -59,7 +59,7 @@ public class CrudServiceImpl<T, I, D, B, R> implements CrudService<I, D> {
 
 
     @Override
-    public Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto) throws IllegalAccessException {
+    public Page<D> getPaginated(PaginatedDto<D> paginatedDto) throws IllegalAccessException {
         Pageable pageable = PageRequest.of(paginatedDto.getCurrentPage(), paginatedDto.getPageSize(),
                 Sort.by(Sort.Direction.fromString(paginatedDto.getOrder().getOrderType()),
                         paginatedDto.getOrder().getColumn()));

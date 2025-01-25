@@ -7,7 +7,7 @@ import com.template.spring.core.application.mapper.EmployeeMapper;
 import com.template.spring.core.domain.model.Employee;
 import com.template.spring.core.infrastructure.persistence.repository.EmployeeDBO;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
-import com.template.spring.core.web.dto.input.EmployeePaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDto;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.template.spring.utils.TestParametersProvider.*;
+import static com.template.spring.utils.EmployeeParametersProvider.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -158,10 +158,10 @@ public class EmployeeServiceTest {
     @ParameterizedTest
     @MethodSource("providePaginatedTestCases")
     public void testGetPaginated(Employee employee, EmployeeDTO employeeDTO, Pageable pageable, Page<Employee> paginatedEntities) throws IllegalAccessException {
-        EmployeePaginatedDto<EmployeeDTO> paginatedDto = new EmployeePaginatedDto<>();
+        PaginatedDto<EmployeeDTO> paginatedDto = new PaginatedDto<>();
         paginatedDto.setCurrentPage(pageable.getPageNumber());
         paginatedDto.setPageSize(pageable.getPageSize());
-        paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "asc"));
+        paginatedDto.setOrder(new PaginatedDto.Order("name", "asc"));
         paginatedDto.setSearchFields(employeeDTO);
 
         when(mapper.DTOToEntity(employeeDTO)).thenReturn(employee);

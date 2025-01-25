@@ -25,7 +25,7 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.template.spring.utils.TestParametersProvider.*;
+import static com.template.spring.utils.EmployeeParametersProvider.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

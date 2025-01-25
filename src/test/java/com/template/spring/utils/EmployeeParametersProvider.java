@@ -5,7 +5,7 @@ import com.template.spring.core.infrastructure.persistence.repository.EmployeeDB
 import com.template.spring.core.web.dto.input.EmployeeDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 
-public class TestParametersProvider {
+public class EmployeeParametersProvider {
 
     public static final Employee EMPLOYEE1 = Employee.builder()
             .id("41fbfe88-ea44-4606-a565-858c6e3b2e9c")

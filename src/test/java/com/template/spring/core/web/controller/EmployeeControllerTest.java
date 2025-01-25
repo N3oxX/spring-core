@@ -5,7 +5,7 @@ import com.template.spring.core.application.exception.UnknownEntityException;
 import com.template.spring.core.application.mapper.EmployeeMapper;
 import com.template.spring.core.application.service.EmployeeService;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
-import com.template.spring.core.web.dto.input.EmployeePaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDto;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.template.spring.utils.TestParametersProvider.*;
+import static com.template.spring.utils.EmployeeParametersProvider.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -169,7 +169,7 @@ public class EmployeeControllerTest {
     @Test
     public void testGetEmployeeById_NotFound() throws Exception {
         String id = UUID.randomUUID().toString();
-        String errorMessage = "Employee not found";
+        String errorMessage = "entity not found";
 
         Mockito.when(service.getById(eq(id))).thenThrow(new UnknownEntityException(errorMessage));
 
@@ -177,7 +177,7 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(errorMessage))
-                .andExpect(jsonPath("$.details").value("The requested employee could not be found."));
+                .andExpect(jsonPath("$.details").value("The requested entity could not be found."));
     }
 
     @ParameterizedTest
@@ -228,10 +228,10 @@ public class EmployeeControllerTest {
     @MethodSource("provideEmployeeData")
     public void testGetPaginatedEmployees(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
         EmployeeDTO searchFields = new EmployeeDTO(null, "David", null, null);
-        EmployeePaginatedDto<EmployeeDTO> paginatedDto = new EmployeePaginatedDto<>();
+        PaginatedDto<EmployeeDTO> paginatedDto = new PaginatedDto<>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
-        paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "ASC"));
+        paginatedDto.setOrder(new PaginatedDto.Order("name", "ASC"));
         paginatedDto.setSearchFields(searchFields);
         List<EmployeeDTO> employees = List.of(
                 dto
@@ -253,10 +253,10 @@ public class EmployeeControllerTest {
     @MethodSource("provideEmployeeData")
     public void testGetPaginatedEmployees_AccessException(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
 
-        EmployeePaginatedDto<EmployeeDTO> paginatedDto = new EmployeePaginatedDto<>();
+        PaginatedDto<EmployeeDTO> paginatedDto = new PaginatedDto<>();
         paginatedDto.setCurrentPage(0);
         paginatedDto.setPageSize(5);
-        paginatedDto.setOrder(new EmployeePaginatedDto.Order("name", "ASC"));
+        paginatedDto.setOrder(new PaginatedDto.Order("name", "ASC"));
         paginatedDto.setSearchFields(dto);
 
         String errorMessage = "Invalid field provided";

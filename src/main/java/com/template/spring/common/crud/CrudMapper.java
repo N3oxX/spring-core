@@ -18,6 +18,5 @@ public interface CrudMapper<T, D, B, R> {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "isDeleted", ignore = true)
     void updateDBOFromEntity(T entity, @MappingTarget B dbo);
 }

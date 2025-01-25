@@ -9,7 +9,7 @@ import lombok.extern.jackson.Jacksonized;
 @Getter
 @Setter
 @Jacksonized
-public class EmployeePaginatedDto<D> {
+public class PaginatedDto<D> {
 
     private int pageSize;
 

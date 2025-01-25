@@ -22,10 +22,10 @@ public class GenericControllerAdvice {
 
 
     @ExceptionHandler(UnknownEntityException.class)
-    public ResponseEntity<ErrorResponse> handleUnknownEmployeeException(UnknownEntityException ex) {
+    public ResponseEntity<ErrorResponse> handleUnknownEntityException(UnknownEntityException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
-                "The requested employee could not be found.",
+                "The requested entity could not be found.",
                 HttpStatus.BAD_REQUEST.value()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

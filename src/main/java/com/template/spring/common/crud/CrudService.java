@@ -1,7 +1,7 @@
 package com.template.spring.common.crud;
 
 import com.template.spring.core.application.exception.UnknownEntityException;
-import com.template.spring.core.web.dto.input.EmployeePaginatedDto;
+import com.template.spring.core.web.dto.input.PaginatedDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,6 +21,6 @@ public interface CrudService<I, D> {
 
     D patch(I id, Map<String, Object> updates) throws UnknownEntityException, IllegalArgumentException;
 
-    Page<D> getPaginated(EmployeePaginatedDto<D> paginatedDto) throws IllegalAccessException;
+    Page<D> getPaginated(PaginatedDto<D> paginatedDto) throws IllegalAccessException;
 
 }
