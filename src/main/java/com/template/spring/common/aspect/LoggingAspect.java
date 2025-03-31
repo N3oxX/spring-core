@@ -17,6 +17,7 @@ public class LoggingAspect {
     }
 
     // Combine all the pointcuts into a single pointcut expression
+    @SuppressWarnings("EmptyMethod")
     @Pointcut("execution(* com.template.spring.core.application..*(..)) || " +
             "execution(* com.template.spring.core.domain..*(..)) || " +
             "execution(* com.template.spring.core.infrastructure..*(..)) || " +

@@ -3,6 +3,7 @@ package com.template.spring.common.crud;
 
 import com.template.spring.core.application.exception.UnknownEntityException;
 import com.template.spring.core.web.dto.input.PaginatedDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,17 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class CrudServiceImpl<T, I, D, B, R> implements CrudService<I, D> {
 
     private final CrudRepositoryImpl<T, I, D, B, R> repository;
     private final CrudMapper<T, D, B, R> mapper;
-
-
-    public CrudServiceImpl(CrudRepositoryImpl<T, I, D, B, R> repository, CrudMapper<T, D, B, R> mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-
-    }
 
 
     @Override
