@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,7 @@ public class EmployeeControllerTest {
     private EmployeeService service;
 
     @MockBean
+    @Qualifier("employeeMapperImpl")
     private EmployeeMapper mapper;
 
     @Autowired
@@ -92,7 +94,7 @@ public class EmployeeControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
-    public void testCreateEmployee(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
+    public void testCreateEmployee(String ignoredId, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
 
         Mockito.when(service.create(any(EmployeeDTO.class))).thenReturn(inputDto);
         Mockito.when(mapper.DTOToResponse(inputDto)).thenReturn(responseDto);
@@ -136,7 +138,7 @@ public class EmployeeControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
-    public void testFindAllEmployees(String id, EmployeeDTO inputDto, EmployeeDTOResponse responseDto) throws Exception {
+    public void testFindAllEmployees(String ignoredId, EmployeeDTO inputDto, EmployeeDTOResponse ignoredResponseDto) throws Exception {
         List<EmployeeDTO> employeeList = List.of(
                 inputDto);
 
@@ -182,7 +184,7 @@ public class EmployeeControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
-    public void testUpdateEmployee_InvalidField(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+    public void testUpdateEmployee_InvalidField(String id, EmployeeDTO dto, EmployeeDTOResponse ignoredResponseDto) throws Exception {
         String errorMessage = "Invalid field provided";
 
 
@@ -226,7 +228,7 @@ public class EmployeeControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
-    public void testGetPaginatedEmployees(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+    public void testGetPaginatedEmployees(String ignoredId, EmployeeDTO dto, EmployeeDTOResponse ignoredResponseDto) throws Exception {
         EmployeeDTO searchFields = new EmployeeDTO(null, "David", null, null);
         var paginatedDto = new PaginatedDTO<EmployeeDTO>();
         paginatedDto.setCurrentPage(0);
@@ -251,7 +253,7 @@ public class EmployeeControllerTest {
 
     @ParameterizedTest
     @MethodSource("provideEmployeeData")
-    public void testGetPaginatedEmployees_AccessException(String id, EmployeeDTO dto, EmployeeDTOResponse responseDto) throws Exception {
+    public void testGetPaginatedEmployees_AccessException(String ignoredId, EmployeeDTO dto, EmployeeDTOResponse ignoredResponseDto) throws Exception {
 
         PaginatedDTO<EmployeeDTO> paginatedDto = new PaginatedDTO<>();
         paginatedDto.setCurrentPage(0);
