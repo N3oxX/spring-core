@@ -101,9 +101,9 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value(responseDto.getName()))
-                .andExpect(jsonPath("$.email").value(responseDto.getEmail()))
-                .andExpect(jsonPath("$.phone").value(responseDto.getPhone()));
+                .andExpect(jsonPath("$.name").value(responseDto.name()))
+                .andExpect(jsonPath("$.email").value(responseDto.email()))
+                .andExpect(jsonPath("$.phone").value(responseDto.phone()));
     }
 
     @ParameterizedTest
@@ -129,9 +129,9 @@ public class EmployeeControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(inputDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(responseDto.getName()))
-                .andExpect(jsonPath("$.email").value(responseDto.getEmail()))
-                .andExpect(jsonPath("$.phone").value(responseDto.getPhone()));
+                .andExpect(jsonPath("$.name").value(responseDto.name()))
+                .andExpect(jsonPath("$.email").value(responseDto.email()))
+                .andExpect(jsonPath("$.phone").value(responseDto.phone()));
     }
 
     @ParameterizedTest
