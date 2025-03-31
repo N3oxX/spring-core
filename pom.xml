@@ -133,6 +133,7 @@
                 <configuration>
                     <!-- File exclusions -->
                     <excludes>
+                        <exclude>**/aspect/**</exclude>
                         <exclude>**/domain/model/**</exclude>
                         <exclude>**/application/mapper/**</exclude>
                         <exclude>**/SpringCoreApplication**</exclude>

@@ -1,7 +1,6 @@
 package com.template.spring.core.web.dto.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.template.spring.common.util.Sensitive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -23,11 +22,9 @@ public class EmployeeDTO {
     @NotNull
     private String name;
 
-    @Sensitive
     @Email(message = "Email should be valid")
     private String email;
 
-    @Sensitive
     private String phone;
 
 
