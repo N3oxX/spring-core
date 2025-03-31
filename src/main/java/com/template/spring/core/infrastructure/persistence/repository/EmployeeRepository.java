@@ -9,7 +9,7 @@ import com.template.spring.core.web.dto.input.EmployeeDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 
 @Repository

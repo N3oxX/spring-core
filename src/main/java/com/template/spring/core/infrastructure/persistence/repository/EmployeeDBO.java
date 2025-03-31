@@ -5,8 +5,8 @@ import com.template.spring.common.util.Sensitive;
 import com.template.spring.core.domain.model.BaseEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 
 @Entity

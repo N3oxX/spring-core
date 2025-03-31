@@ -6,7 +6,6 @@ import com.template.spring.common.util.LoggingUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-    @Autowired
     public LoggingAspect(ObjectMapper objectMapper) {
         objectMapper.registerModule(new JavaTimeModule());
     }
@@ -47,7 +45,10 @@ public class LoggingAspect {
         }
     }
 
-    @AfterReturning(pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()", returning = "result")
+    @AfterReturning(
+            pointcut = "crudPackagePointcut() || applicationPackagePointcut() || domainPackagePointcut() || infrastructurePackagePointcut() || primaryAdaptersPackagePointcut()",
+            returning = "result"
+    )
     public void logAfterMethod(JoinPoint joinPoint, Object result) {
         if (notExcluded(joinPoint)) {
             String maskedResultString = LoggingUtil.maskSensitiveData(result);
