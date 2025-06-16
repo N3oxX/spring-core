@@ -47,5 +47,5 @@ def duplicate_and_rename_classes(root_dir, target_name="Employee"):
                 print(f"Duplicated and renamed: {original_file_path} -> {new_file_path}")
 
 # Example usage
-root_directory = "C:\\spring-templates\\spring-core\\src"  # Replace with your project's root directory
+root_directory = "C:\\Users\\N3oxX\\IdeaProjects\\spring-core\\src"  # Replace with your project's root directory
 duplicate_and_rename_classes(root_directory, target_name="Employee")

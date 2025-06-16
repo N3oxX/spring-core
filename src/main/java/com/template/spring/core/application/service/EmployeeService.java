@@ -8,13 +8,14 @@ import com.template.spring.core.infrastructure.persistence.repository.EmployeeDB
 import com.template.spring.core.infrastructure.persistence.repository.EmployeeRepository;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeService extends CrudServiceImpl<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> implements ManagementUseCase {
 
 
-    public EmployeeService(EmployeeRepository repository, EmployeeMapper mapper) {
+    public EmployeeService(EmployeeRepository repository, @Qualifier("employeeMapperImpl") EmployeeMapper mapper) {
         super(repository, mapper);
     }
 

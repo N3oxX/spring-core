@@ -1,12 +1,11 @@
 package com.template.spring.core.web.dto.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.template.spring.common.util.Sensitive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 
@@ -23,11 +22,9 @@ public class EmployeeDTO {
     @NotNull
     private String name;
 
-    @Sensitive
     @Email(message = "Email should be valid")
     private String email;
 
-    @Sensitive
     private String phone;
 
 

@@ -1,19 +1,8 @@
 package com.template.spring.core.web.dto.output;
 
-import com.template.spring.common.util.Sensitive;
-import lombok.*;
+import lombok.Builder;
 
 @Builder
-@AllArgsConstructor
-@Data
-public class EmployeeDTOResponse {
+public record EmployeeDTOResponse(String id, String name, String email, String phone) {
 
-    private final String id;
-
-    private final String name;
-
-    @Sensitive
-    private final String email;
-    @Sensitive
-    private final String phone;
 }

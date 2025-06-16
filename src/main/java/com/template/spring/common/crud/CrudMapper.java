@@ -1,6 +1,5 @@
 package com.template.spring.common.crud;
 
-import org.mapstruct.MapperConfig;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 

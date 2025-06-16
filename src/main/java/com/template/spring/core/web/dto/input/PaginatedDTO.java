@@ -1,6 +1,8 @@
 package com.template.spring.core.web.dto.input;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter

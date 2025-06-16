@@ -7,6 +7,7 @@ import com.template.spring.core.domain.model.Employee;
 import com.template.spring.core.infrastructure.persistence.repository.EmployeeDBO;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,11 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/employees")
 public class EmployeeController extends CrudController<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> {
 
-    final EmployeeService service;
-
-    public EmployeeController(EmployeeService service, EmployeeMapper mapper) {
+    public EmployeeController(EmployeeService service, @Qualifier("employeeMapperImpl") EmployeeMapper mapper) {
         super(service, mapper);
-        this.service = service;
 
     }
 
