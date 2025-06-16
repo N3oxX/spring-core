@@ -2,10 +2,9 @@ package com.template.spring.core.infrastructure.persistence.repository;
 
 
 import com.template.spring.core.domain.model.BaseEntity;
-import lombok.*;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.*;
 
 
 @Entity
@@ -24,4 +23,7 @@ public class EmployeeDBO extends BaseEntity {
 
 
     private String phone;
+
+
+    private Integer age;
 }

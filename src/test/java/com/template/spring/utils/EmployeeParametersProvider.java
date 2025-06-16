@@ -30,8 +30,8 @@ public class EmployeeParametersProvider {
             .build();
 
 
-    public static final EmployeeDBO EMPLOYEE_DBO1 = new EmployeeDBO("David", "david@gmail.com", "12354353");
-    public static final EmployeeDBO EMPLOYEE_DBO2 = new EmployeeDBO("Ramon", "ramon12353@hotmail.com", "68303950243");
+    public static final EmployeeDBO EMPLOYEE_DBO1 = new EmployeeDBO("David", "david@gmail.com", "12354353", 30);
+    public static final EmployeeDBO EMPLOYEE_DBO2 = new EmployeeDBO("Ramon", "ramon12353@hotmail.com", "68303950243", 30);
 
     public static final EmployeeDTO EMPLOYEE_DTO1 = EmployeeDTO.builder().name("David").email("david@gmail.com").phone("12354353").build();
     public static final EmployeeDTO EMPLOYEE_DTO2 = EmployeeDTO.builder().name("Ramon").email("ramon12353@hotmail.com").phone("68303950243").build();

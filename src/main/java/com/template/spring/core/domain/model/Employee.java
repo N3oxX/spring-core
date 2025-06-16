@@ -1,7 +1,6 @@
 package com.template.spring.core.domain.model;
 
 import lombok.EqualsAndHashCode;
-
 import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
@@ -13,5 +12,8 @@ public class Employee extends BaseEntity {
     String name;
 
     String email;
+
     String phone;
+
+    Integer age;
 }
