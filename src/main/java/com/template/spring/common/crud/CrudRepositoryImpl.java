@@ -2,17 +2,21 @@ package com.template.spring.common.crud;
 
 
 import com.template.spring.core.application.exception.UnknownEntityException;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +30,7 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
 
     private final JpaRepository<B, I> repository;
     private final CrudMapper<T, D, B, R> mapper;
-    private final EntityManager entityManager;
+    private final JpaSpecificationExecutor<B> specificationExecutor;
 
     @Override
     public T save(T entity) {
@@ -94,60 +98,48 @@ public class CrudRepositoryImpl<T, I, D, B, R> implements CrudRepository<T, I> {
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public Page<T> findPaginated(T searchFields, Pageable pageable) throws IllegalAccessException {
-        Type type = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[3];
-        Class<B> entityClass = (Class<B>) type;
 
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<B> criteriaQuery = cb.createQuery(entityClass);
-        Root<B> root = criteriaQuery.from(entityClass);
+        Map<String, Object> nonNullFields = extractNonNullFields(searchFields);
 
-        List<Predicate> predicates = new ArrayList<>();
+        Specification<B> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-        if (searchFields != null) {
-            for (Field field : searchFields.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                Object value = field.get(searchFields);
-                if (value != null) {
-                    predicates.add(cb.like(root.get(field.getName()), "%" + value + "%"));
+            for (Map.Entry<String, Object> entry : nonNullFields.entrySet()) {
+                Path<Object> path = root.get(entry.getKey());
+                Object value = entry.getValue();
+
+                if (value instanceof String str) {
+                    predicates.add(cb.like(cb.lower(path.as(String.class)), "%" + str.toLowerCase() + "%"));
+                } else {
+                    predicates.add(cb.equal(path, value));
                 }
             }
-        }
 
-        if (!predicates.isEmpty()) {
-            criteriaQuery.where(cb.and(predicates.toArray(new Predicate[0])));
-        }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
 
-        pageable.getSort();
-        List<Order> orders = new ArrayList<>();
-        pageable.getSort().forEach(order -> {
-            if (order.isAscending()) {
-                orders.add(cb.asc(root.get(order.getProperty())));
-            } else {
-                orders.add(cb.desc(root.get(order.getProperty())));
-            }
-        });
-        criteriaQuery.orderBy(orders);
+        Page<B> dbResultPage = specificationExecutor.findAll(spec, pageable);
 
-        TypedQuery<B> query = entityManager.createQuery(criteriaQuery);
-        query.setFirstResult((int) pageable.getOffset());
-        query.setMaxResults(pageable.getPageSize());
-
-        List<B> resultList = query.getResultList();
-
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        countQuery.select(cb.count(countQuery.from(entityClass)));
-        if (!predicates.isEmpty()) {
-            countQuery.where(cb.and(predicates.toArray(new Predicate[0])));
-        }
-        long count = entityManager.createQuery(countQuery).getSingleResult();
-
-        List<T> items = resultList.stream()
+        List<T> items = dbResultPage.stream()
                 .map(mapper::DBOToEntity)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(items, pageable, count);
+        return new PageImpl<>(items, pageable, dbResultPage.getTotalElements());
+    }
+
+    private Map<String, Object> extractNonNullFields(T searchFields) throws IllegalAccessException {
+        Map<String, Object> fields = new HashMap<>();
+
+        for (Field field : searchFields.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            Object value = field.get(searchFields);
+            if (value != null) {
+                fields.put(field.getName(), value);
+            }
+        }
+
+        return fields;
     }
 
 }

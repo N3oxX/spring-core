@@ -7,7 +7,6 @@ import com.template.spring.core.domain.model.Employee;
 import com.template.spring.core.domain.repository.EmployeeRepositoryAdapter;
 import com.template.spring.core.web.dto.input.EmployeeDTO;
 import com.template.spring.core.web.dto.output.EmployeeDTOResponse;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +15,8 @@ import org.springframework.stereotype.Repository;
 public class EmployeeRepository extends CrudRepositoryImpl<Employee, String, EmployeeDTO, EmployeeDBO, EmployeeDTOResponse> implements EmployeeRepositoryAdapter {
 
 
-    public EmployeeRepository(EmployeeJpaRepository repository, @Qualifier("employeeMapperImpl") EmployeeMapper mapper, EntityManager entityManager) {
-        super(repository, mapper, entityManager);
+    public EmployeeRepository(EmployeeJpaRepository repository, @Qualifier("employeeMapperImpl") EmployeeMapper mapper) {
+        super(repository, mapper, repository);
     }
 
 
