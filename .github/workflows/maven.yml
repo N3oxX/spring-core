@@ -1,7 +1,8 @@
 permissions:
   contents: read
+  id-token: write
+  packages: read
   security-events: write
-  id-token: write  # Required for uploading the dependency snapshot
 
 name: Java CI with Maven
 
