@@ -29,5 +29,5 @@ jobs:
     - name: Build with Maven and generate SBOM
       run: mvn clean verify -DskipTests
 
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v4
+    - name: Upload dependency snapshot
+      uses: github/dependency-submission-action@v1
