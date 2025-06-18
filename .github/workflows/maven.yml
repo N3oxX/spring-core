@@ -1,8 +1,9 @@
 permissions:
-  contents: read
+  contents: write
   id-token: write
   packages: read
   security-events: write
+
 
 name: Java CI with Maven
 
