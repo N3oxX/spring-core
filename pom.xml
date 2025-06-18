@@ -98,7 +98,20 @@
 
     <build>
         <plugins>
-
+            <plugin>
+              <groupId>org.cyclonedx</groupId>
+              <artifactId>cyclonedx-maven-plugin</artifactId>
+              <version>2.7.9</version>
+              <executions>
+                <execution>
+                  <phase>verify</phase>
+                  <goals>
+                    <goal>makeAggregateBom</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+                 
             <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
