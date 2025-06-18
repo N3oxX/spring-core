@@ -29,6 +29,6 @@ jobs:
       run: mvn clean verify -DskipTests
 
     - name: Upload dependency snapshot (SBOM)
-      uses: github/dependency-submission-action@v1
+      uses: github/dependency-submission-action@v4
       with:
         sbom-path: target/bom.json
