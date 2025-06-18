@@ -28,7 +28,5 @@ jobs:
     - name: Build with Maven and generate SBOM
       run: mvn clean verify -DskipTests
 
-    - name: Upload dependency snapshot (SBOM)
-      uses: github/dependency-submission-action@v4
-      with:
-        sbom-path: target/bom.json
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@v4
