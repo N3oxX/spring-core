@@ -1,6 +1,6 @@
 # Spring-Core
 
-![Java CI](https://github.com/USERNAME/REPO-NAME/actions/workflows/WORKFLOW-FILE.yml/badge.svg)
+[![Java CI with Maven](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml/badge.svg)](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml)
 
 A modern Java Spring Boot template for building robust RESTful applications with best practices out of the box.
 
