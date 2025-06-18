@@ -1,5 +1,7 @@
 # Spring-Core
 
+![Java CI](https://github.com/USERNAME/REPO-NAME/actions/workflows/WORKFLOW-FILE.yml/badge.svg)
+
 A modern Java Spring Boot template for building robust RESTful applications with best practices out of the box.
 
 ## Features
