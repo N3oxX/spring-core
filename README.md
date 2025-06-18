@@ -1,6 +1,6 @@
 # Spring-Core
 
-[![Java CI with Maven](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml/badge.svg)](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml)
+[![Java CI with Maven](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml/badge.svg)](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml)![Releases](https://badgen.net/github/releases/n3oxx/spring-core)
 
 A modern Java Spring Boot template for building robust RESTful applications with best practices out of the box.
 
