@@ -1,6 +1,6 @@
 # Spring-Core
 
-[![Java CI with Maven](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml/badge.svg)] ![GitHub Release](https://img.shields.io/github/v/release/n3oxx/spring-core) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/n3oxx/spring-core)
+![Java CI with Maven](https://github.com/N3oxX/spring-core/actions/workflows/maven.yml/badge.svg) ![GitHub Release](https://img.shields.io/github/v/release/n3oxx/spring-core) ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/n3oxx/spring-core)
 
 
 
